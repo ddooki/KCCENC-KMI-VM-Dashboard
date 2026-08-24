@@ -100,12 +100,13 @@ thead th{background:var(--panel-2);font-size:13px;font-weight:600;color:var(--mu
   white-space:nowrap;overflow:hidden}
 thead tr.g th{padding:8px 6px;font-size:12.5px;letter-spacing:.03em;
   color:var(--sage);border-bottom:1px solid var(--line-soft)}
+thead tr:last-child th{font-size:11.5px;padding:7px 2px;line-height:1.25}
 th.grp-resp{background:rgba(138,166,124,.10)}
 th.grp-safe{background:rgba(217,164,65,.09)}
 th.grp-fin{background:rgba(122,150,190,.09)}
 th.srt{cursor:pointer;user-select:none;transition:.12s}
 th.srt:hover{color:var(--text-2)}
-th.srt .ar{font-size:10px;margin-left:3px;color:#4d5f54}
+th.srt .ar{font-size:8.5px;margin-left:1px;color:#4d5f54}
 th.srt.act{color:var(--sage-glow)}
 th.srt.act .ar{color:var(--sage-glow)}
 tbody td{padding:10px 6px;border-bottom:1px solid var(--line-soft);
@@ -330,10 +331,15 @@ details.guide[open] summary::before{transform:rotate(90deg)}
     <div class="sechead">
       <h2>업체별 종합 판정 현황</h2>
       <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="search-input" id="vendorSearch" placeholder="업체명 검색..." />
+        </div>
         <div class="filters" id="filters">
           <button class="chip on" data-f="all">전체</button>
-          <button class="chip" data-f="crit">경보</button>
-          <button class="chip" data-f="warn">주의</button>
           <button class="chip" data-f="install">설치계약</button>
           <button class="chip" data-f="supply">납품계약</button>
         </div>
@@ -345,8 +351,8 @@ details.guide[open] summary::before{transform:rotate(90deg)}
       <table id="vtable">
         <colgroup>
           <col style="width:280px"><col style="width:115px">
-          <col style="width:60px"><col style="width:60px"><col style="width:60px">
-          <col style="width:60px"><col style="width:60px"><col style="width:60px">
+          <col style="width:62px"><col style="width:62px"><col style="width:62px">
+          <col style="width:62px"><col style="width:62px"><col style="width:62px">
           <col style="width:70px"><col style="width:90px">
           <col style="width:130px"><col style="width:60px"><col style="width:60px"><col style="width:115px">
           <col style="width:68px"><col style="width:84px"><col style="width:68px">
@@ -364,19 +370,19 @@ details.guide[open] summary::before{transform:rotate(90deg)}
             <th class="divl srt" data-k="og" rowspan="2">종합<span class="ar">▲▼</span></th>
           </tr>
           <tr>
-            <th class="divl srt" data-k="r0">사전<br>협의<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r1">납기<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r2">설계<br>변경<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r3">소통<br>협조<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r4">불량<br>대응<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r5">정산<br>클레임<span class="ar">▲▼</span></th>
-            <th class="divl srt" data-k="trade">공종<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="sstd">기준<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="sp">벌점<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="sg">제재<span class="ar">▲▼</span></th>
-            <th class="divl srt" data-k="fc">신용<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="fh">현금흐름<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="fr">R-MIS<span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="r0">사전<br>협의 <span class="ar">▲▼</span></th>
+            <th class="srt" data-k="r1">납기<br><span class="ar">▲▼</span></th>
+            <th class="srt" data-k="r2">설계<br>변경 <span class="ar">▲▼</span></th>
+            <th class="srt" data-k="r3">소통<br>협조 <span class="ar">▲▼</span></th>
+            <th class="srt" data-k="r4">불량<br>대응 <span class="ar">▲▼</span></th>
+            <th class="srt" data-k="r5">정산<br>클레임 <span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="trade">공종<br><span class="ar">▲▼</span></th>
+            <th class="srt" data-k="sstd">기준<br><span class="ar">▲▼</span></th>
+            <th class="srt" data-k="sp">벌점<br><span class="ar">▲▼</span></th>
+            <th class="srt" data-k="sg">제재<br><span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="fc">신용<br><span class="ar">▲▼</span></th>
+            <th class="srt" data-k="fh">현금<br>흐름 <span class="ar">▲▼</span></th>
+            <th class="srt" data-k="fr">R-MIS<br><span class="ar">▲▼</span></th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -724,7 +730,7 @@ const wonS=n=>n>=1e12?(n/1e12).toFixed(2)+"조":Math.round(n/1e8).toLocaleString
 let curQ="26-3Q",editing=false,filter="all",selected=null;
 let scope="all", scopeTop="all", curSite=null;
 let sortT={k:null,d:1}, sortV={k:null,d:1};
-let siteSearchTerm="";
+let siteSearchTerm="", vendorSearchTerm="";
 
 const inScope=(v,sc)=> sc==="all"?true:v.scope===sc;
 
@@ -823,8 +829,11 @@ function renderDonuts(){
 }
 function renderTable(){
   let rows=curList().map(v=>({v,g:overall(v,curQ)}))
-    .filter(o=> filter==="all"?true : filter==="crit"?o.g==="crit"
-      : filter==="warn"?o.g==="warn" : filter==="install"?o.v.inst : !o.v.inst);
+    .filter(o=>{
+      const matchFilter = filter==="all" ? true : filter==="install" ? o.v.inst : !o.v.inst;
+      const matchSearch = !vendorSearchTerm || o.v.n.toLowerCase().includes(vendorSearchTerm) || o.v.cat.toLowerCase().includes(vendorSearchTerm);
+      return matchFilter && matchSearch;
+    });
   const GO={crit:0,warn:1,ok:2};
   const key={
     name:o=>o.v.n,
@@ -957,7 +966,8 @@ function renderSite(){renderDonuts();renderTable();renderDetail();}
 
 function openSite(name){
   curSite=SITES.find(s=>s.name===name);
-  selected=null;filter="all";sortV={k:null,d:1};scope=scopeTop;
+  selected=null;filter="all";sortV={k:null,d:1};scope=scopeTop;vendorSearchTerm="";
+  const vs=document.getElementById("vendorSearch");if(vs)vs.value="";
   document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on",c.dataset.f==="all"));
   document.querySelectorAll("#scopeSite button").forEach(b=>b.classList.toggle("on",b.dataset.s===scope));
   document.getElementById("siteName").textContent="■ 현장명 : "+name;
@@ -999,6 +1009,10 @@ document.getElementById("scopeSite").addEventListener("click",e=>{
 document.getElementById("siteSearch").addEventListener("input",e=>{
   siteSearchTerm=e.target.value.trim().toLowerCase();
   renderTop();
+});
+document.getElementById("vendorSearch").addEventListener("input",e=>{
+  vendorSearchTerm=e.target.value.trim().toLowerCase();
+  renderTable();
 });
 document.getElementById("sfilters").addEventListener("click",e=>{
   const b=e.target.closest("button[data-f]");if(!b)return;
