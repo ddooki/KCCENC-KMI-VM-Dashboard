@@ -9,20 +9,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
 <style>
 :root {
-  --bg: #0c110e;
-  --panel: #131b16;
-  --panel-2: #18241d;
-  --panel-3: #1f2f26;
-  --line: #27382e;
-  --line-soft: #1b2820;
+  --bg: #1c2622;
+  --panel: #22302b;
+  --panel-2: #283933;
+  --panel-3: #30433c;
+  --line: #3d524a;
+  --line-soft: #2c3e37;
+  --col-div: #4a6157; /* 평가 컬럼 간 명확한 회색-슬레이트 구분선 */
   --text: #e8f0eb;
   --text-2: #bad0c2;
-  --muted: #728a7c;
+  --muted: #7f998b;
   --sage: #8aa67c;
   --sage-glow: #a4c495;
-  --sage-deep: #2e4436;
-  --sage-dim: #1f2f25;
-  --ok: #6f9463;
+  --sage-deep: #385444;
+  --sage-dim: #283a2f;
+  --ok: #79a36d;
   --warn: #d9a441;
   --crit: #c25d53;
   --gold: #d9a441;
@@ -118,7 +119,7 @@ body {
 }
 .scard {
   background: var(--panel);
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 16px 18px;
   display: flex;
@@ -151,16 +152,16 @@ body {
   align-items: center;
   gap: 4px;
 }
-.sbadge.crit { background: rgba(194,93,83,.18); color: var(--red); border: 1px solid var(--red-dim); }
-.sbadge.warn { background: rgba(217,164,65,.18); color: var(--gold); border: 1px solid var(--gold-dim); }
-.sbadge.ok { background: rgba(111,148,99,.15); color: var(--ok); border: 1px solid var(--sage-deep); }
+.sbadge.crit { background: rgba(194,93,83,.22); color: #ff8b80; border: 1px solid rgba(194,93,83,.5); }
+.sbadge.warn { background: rgba(217,164,65,.22); color: #f5c464; border: 1px solid rgba(217,164,65,.5); }
+.sbadge.ok { background: rgba(111,148,99,.22); color: #9cd28b; border: 1px solid rgba(111,148,99,.5); }
 .sbadge .num { font-family: var(--mono); font-weight: 800; }
 
 /* 요약 위젯 */
 .top-summaries {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
   margin-bottom: 22px;
 }
 @media (max-width: 1100px) {
@@ -168,75 +169,138 @@ body {
 }
 .ts-card {
   background: var(--panel);
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  overflow: hidden;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
 }
 .ts-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 13px 18px;
-  background: var(--panel-2);
-  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
 }
-.ts-head h3 { font-size: 15.5px; font-weight: 800; color: #ffffff; }
-.ts-list { max-height: none; overflow-y: visible; }
-.ts-item {
+.ts-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+.ts-sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.ts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ts-item {
+  display: flex;
   justify-content: space-between;
-  padding: 10px 18px;
-  border-bottom: 1px solid var(--line-soft);
-  font-size: 13.5px;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
   cursor: pointer;
   transition: .12s;
 }
-.ts-item:hover { background: var(--panel-2); }
-.ts-item:last-child { border-bottom: 0; }
-.ts-rank {
-  width: 24px;
-  font-family: var(--mono);
-  font-weight: 800;
-  font-size: 13px;
-  color: var(--muted);
+.ts-item:hover {
+  background: var(--panel-3);
+  border-color: var(--sage);
+  transform: translateX(2px);
 }
-.ts-rank.top3 { color: var(--gold); }
-.ts-info { flex: 1; min-width: 0; padding: 0 12px; }
-.ts-name { font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ts-sub { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ts-tri { display: flex; gap: 5px; align-items: center; margin-right: 12px; }
-.ts-tag { font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
-.ts-tag.fin { border: 1px solid #3f5570; color: #9bbde3; background: rgba(122,150,190,.12); }
-.ts-tag.resp { border: 1px solid var(--sage-deep); color: var(--sage-glow); background: rgba(138,166,124,.12); }
-.ts-tag.safe { border: 1px solid var(--gold-dim); color: var(--gold); background: rgba(217,164,65,.12); }
-.ts-tag.crit { border-color: var(--red-dim); color: var(--red); background: rgba(194,93,83,.2); }
-.ts-tag.warn { border-color: var(--gold-dim); color: var(--gold); background: rgba(217,164,65,.2); }
-.ts-tag.ok { border-color: var(--sage-deep); color: var(--ok); background: rgba(111,148,99,.15); }
+.ts-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+.ts-rank {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  width: 20px;
+  text-align: center;
+  flex: none;
+}
+.ts-item:nth-child(1) .ts-rank { color: var(--red); }
+.ts-item:nth-child(2) .ts-rank { color: var(--gold); }
+.ts-item:nth-child(3) .ts-rank { color: var(--gold); }
+.ts-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ts-meta {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.ts-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+.ts-amt {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-2);
+}
 
 /* Sections & Toolbars */
 .section {
   background: var(--panel);
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 22px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
 }
 .sechead {
-  padding: 14px 18px;
-  background: var(--panel-2);
-  border-bottom: 1px solid var(--line-soft);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 14px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sechead h2 {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #fff;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
   flex-wrap: wrap;
 }
-.sechead h2 { font-size: 16.5px; font-weight: 800; color: #ffffff; }
-.toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-.search-wrap { position: relative; display: flex; align-items: center; }
-.search-wrap svg { position: absolute; left: 10px; width: 14px; height: 14px; color: var(--muted); }
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 10px;
+  width: 14px;
+  height: 14px;
+  color: var(--muted);
+}
 .search-input {
   background: var(--bg);
   border: 1px solid var(--line);
@@ -320,23 +384,25 @@ thead th.srt { cursor: pointer; user-select: none; }
 thead th.srt:hover { color: #fff; background: var(--panel-3); }
 thead th.srt.act { color: var(--sage-glow); }
 
-/* 정렬 인디케이터 위아래 세로 배치 및 가독성 개선 */
-.th-wrap { display: inline-flex; align-items: center; justify-content: center; gap: 3px; vertical-align: middle; }
-.ar { display: inline-flex; flex-direction: column; line-height: 0.65; font-size: 8px; margin-left: 2px; color: #6a7d71; font-family: monospace; font-weight: 800; vertical-align: middle; }
+/* 정렬 인디케이터 - 활성 시 단일 화살표만 명확히 노출 */
+.th-wrap { display: inline-flex; align-items: center; justify-content: center; gap: 4px; vertical-align: middle; }
+.ar { display: inline-flex; flex-direction: column; line-height: 0.7; font-size: 8.5px; margin-left: 2px; color: #5e756c; font-family: monospace; font-weight: 800; vertical-align: middle; }
 .ar .u, .ar .d { display: inline-block; transition: .1s; }
-.ar .u.on { color: var(--sage-glow); font-size: 10px; font-weight: 900; }
-.ar .d.on { color: var(--sage-glow); font-size: 10px; font-weight: 900; }
+.ar.act-u .d { display: none !important; }
+.ar.act-u .u { color: var(--sage-glow) !important; font-size: 10.5px; font-weight: 900; }
+.ar.act-d .u { display: none !important; }
+.ar.act-d .d { color: var(--sage-glow) !important; font-size: 10.5px; font-weight: 900; }
 th.act .ar { color: var(--sage-glow); }
 
-/* Header Group Colors - 갑지와 일치하는 차분하고 안정적인 배경 톤 */
+/* Header Group Colors */
 .grp-fin { background: var(--panel-3) !important; color: #a4c2e6 !important; border-bottom: 2px solid #3f5570 !important; }
 .grp-resp { background: var(--panel-3) !important; color: #b2d4a5 !important; border-bottom: 2px solid var(--sage-deep) !important; }
 .grp-safe { background: var(--panel-3) !important; color: #e5c37d !important; border-bottom: 2px solid var(--gold-dim) !important; }
 
 tbody tr { border-bottom: 1px solid var(--line-soft); transition: .1s; }
-tbody tr:hover { background: rgba(138,166,124,.05); }
+tbody tr:hover { background: rgba(255,255,255,.03); }
 tbody td { padding: 8px 4px; vertical-align: middle; }
-.divl { border-left: 1px solid var(--line-soft); }
+.divl { border-left: 1.5px solid var(--col-div) !important; } /* 눈에 띄는 회색-슬레이트 세로선 */
 .num { font-family: var(--mono); font-size: 13px; color: var(--text-2); text-align: right; padding-right: 8px !important; }
 .empty { padding: 36px 20px; text-align: center; color: var(--muted); font-size: 14px; }
 
@@ -344,23 +410,23 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
 .slink { font-weight: 700; font-size: 14.5px; cursor: pointer; color: var(--text); display: block; }
 .slink:hover { color: var(--sage-glow); text-decoration: underline; }
 .dvtag { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
-.dv-인프라 { background: rgba(122,150,190,.14); color: #8fb0d4; border: 1px solid #3f5570; }
-.dv-건축 { background: rgba(138,166,124,.14); color: var(--sage); border: 1px solid var(--sage-deep); }
-.dv-플랜트 { background: rgba(184,140,200,.13); color: #b78ec8; border: 1px solid #5d4468; }
+.dv-인프라 { background: rgba(122,150,190,.18); color: #9bbbe0; border: 1px solid #4a6382; }
+.dv-건축 { background: rgba(138,166,124,.18); color: #9ec28f; border: 1px solid var(--sage-deep); }
+.dv-플랜트 { background: rgba(184,140,200,.18); color: #caa2dc; border: 1px solid #6c5078; }
 .cw { font-family: var(--mono); font-size: 13.5px; font-weight: 700; }
-.cw .c { color: var(--red); } .cw .w { color: var(--gold); } .cw .s { color: #4d5f54; font-weight: 400; margin: 0 2px; }
-.cw.zero { color: #4d5f54; font-weight: 400; }
+.cw .c { color: #ff7b6e; } .cw .w { color: #f5c464; } .cw .s { color: #5d7569; font-weight: 400; margin: 0 2px; }
+.cw.zero { color: #5d7569; font-weight: 400; }
 
 /* Vtable - Detail Table (No horizontal scroll!) */
 #vtable { width: 100%; min-width: 1340px; }
-.vname {
-  font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.vname:hover { color: var(--sage-glow); }
-.vsub { font-size: 12px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pill { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; flex: none; }
-.pill.install { background: rgba(217,164,65,.16); color: var(--gold); border: 1px solid var(--gold-dim); }
+.vcell-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 2px 6px; }
+.vname-row { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; cursor: pointer; }
+.vname-row:hover { color: var(--sage-glow); }
+.vsub-row { font-size: 12px; color: var(--muted); padding-left: 2px; }
+.pill { font-size: 11px; font-weight: 700; padding: 1.5px 6px; border-radius: 4px; flex: none; display: inline-block; }
+.pill.sub { background: rgba(217,164,65,.18); color: #f5c464; border: 1px solid #7d5f24; }
+.pill.mat { background: rgba(122,150,190,.18); color: #9bbbe0; border: 1px solid #3f5570; }
+.pill.plant { background: rgba(184,140,200,.18); color: #caa2dc; border: 1px solid #5d4468; }
 .pill.supply { background: rgba(138,166,124,.14); color: var(--sage); border: 1px solid var(--sage-deep); }
 
 /* 현장평가 상시 클릭 셀 */
@@ -599,8 +665,8 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
         <select class="sel-q" id="qsel"></select>
         <div class="filters" id="filters">
           <button class="chip on" data-f="all">전체</button>
-          <button class="chip" data-f="install">설치계약</button>
-          <button class="chip" data-f="supply">납품계약</button>
+          <button class="chip" data-f="sub">외주</button>
+          <button class="chip" data-f="mat">자재</button>
         </div>
         <button class="btn btn-primary" id="openModalBtn">+ 전체 계약현황 조회 / 추가</button>
       </div>
@@ -677,8 +743,8 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
       <div class="filters" id="modalFilters">
         <button class="chip on" data-mf="all">전체 계약</button>
         <button class="chip" data-mf="risk">재무 주의/경보</button>
-        <button class="chip" data-mf="install">설치계약</button>
-        <button class="chip" data-mf="supply">납품계약</button>
+        <button class="chip" data-mf="sub">외주</button>
+        <button class="chip" data-mf="mat">자재</button>
       </div>
     </div>
     <div class="modal-body">
@@ -1034,12 +1100,19 @@ function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i)
 function rng(seed){let a=seed;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 
-// ══ 현장별·분기별 관리 대상 계약 풀 (기본값: 공란) ══
+// ══ 현장별·분기별 관리 대상 계약 풀 (재무등급 경보 업체 자동 추가) ══
 const siteManagedMap = {};
 SITES.forEach(s => {
   siteManagedMap[s.name] = {};
+  const allContracts = REAL_SITE_DATA[s.name] || [];
+  const critCids = allContracts.filter(c => {
+    if(!c.fin) return false;
+    const ci = CREDIT.indexOf(c.fin.c), hi = CASH.indexOf(c.fin.h), r = c.fin.r;
+    return (ci >= CREDIT.indexOf("B-") || hi >= CASH.indexOf("D") || r >= 6);
+  }).map(c => c.cid);
+
   QUARTERS.forEach(q => {
-    siteManagedMap[s.name][q] = []; // 모든 현장 디폴트 공란 (추가 버튼으로 문제 업체 등록)
+    siteManagedMap[s.name][q] = [...critCids]; // 재무 경보 업체는 기본 자동 포함
   });
 });
 
@@ -1304,15 +1377,11 @@ function markSort(sel, st){
   document.querySelectorAll(sel+" th.srt").forEach(th=>{
     const isAct = th.dataset.k === st.k;
     th.classList.toggle("act", isAct);
-    const u = th.querySelector(".ar .u");
-    const d = th.querySelector(".ar .d");
-    if(u && d){
+    const ar = th.querySelector(".ar");
+    if(ar){
+      ar.classList.remove("act-u", "act-d");
       if(isAct){
-        u.classList.toggle("on", st.d === 1);
-        d.classList.toggle("on", st.d === -1);
-      } else {
-        u.classList.remove("on");
-        d.classList.remove("on");
+        ar.classList.add(st.d === 1 ? "act-u" : "act-d");
       }
     }
   });
@@ -1333,7 +1402,7 @@ function renderDonuts(){
 function renderTable(){
   let rows = curList().map((v, idx)=>({v, g:overall(v,curQ), origIdx: idx}))
     .filter(o=>{
-      const matchFilter = filter==="all" ? true : filter==="install" ? o.v.inst : !o.v.inst;
+      const matchFilter = filter==="all" ? true : filter==="sub" ? o.v.scope==="sub" : o.v.scope==="mat";
       const matchSearch = !vendorSearchTerm || o.v.n.toLowerCase().includes(vendorSearchTerm) || o.v.cat.toLowerCase().includes(vendorSearchTerm) || (o.v.item && o.v.item.toLowerCase().includes(vendorSearchTerm));
       return matchFilter && matchSearch;
     });
@@ -1411,11 +1480,19 @@ function renderTable(){
          <td>${s.bans>=1 ? `<span class="badge b-crit">입찰제한 ${s.bans}회</span>`
            : s.g==="warn" ? `<span class="badge b-warn">기준 근접</span>` : `<span class="badge b-ok">정상</span>`}</td>`;
 
+    const pillClass = v.scope==="sub" ? "sub" : "mat";
+    const pillText = v.scope==="sub" ? "외주" : "자재";
+
     return `<tr class="${selected===i?'sel':''}">
-      <td class="name">
-        <div class="vname" data-open="${i}"><span style="overflow:hidden;text-overflow:ellipsis">${v.n}</span>
-          <span class="pill ${v.inst?'install':'supply'}">${v.scope==="sub"?"외주":v.inst?"설치":"납품"}</span></div>
-        <div class="vsub">${v.item || v.cat}</div></td>
+      <td class="name" style="padding-left:10px">
+        <div class="vcell-wrap" data-open="${i}">
+          <div class="vname-row">
+            <span class="pill ${pillClass}">${pillText}</span>
+            <span style="overflow:hidden;text-overflow:ellipsis">${v.n}</span>
+          </div>
+          <div class="vsub-row">${v.item || v.cat}</div>
+        </div>
+      </td>
       <td class="num">${won(v.amt)}</td>
       ${finCells}
       ${respCells}
@@ -1457,9 +1534,11 @@ function renderDetail(){
 
   const rr = v.fin.r>=6 ? "위험" : v.fin.r>=4 ? "주의" : "정상";
   d.className = "detail show";
+  const pillClass = v.scope==="sub" ? "sub" : "mat";
+  const pillText = v.scope==="sub" ? "외주계약" : "자재계약";
   d.innerHTML = `
   <div class="dhead">
-    <div><h3>${v.n} <span class="pill ${v.inst?'install':'supply'}">${v.scope==="sub"?"외주계약":v.inst?"설치계약":"납품계약"}</span></h3>
+    <div><h3><span class="pill ${pillClass}" style="font-size:12.5px;padding:3px 8px;margin-right:6px">${pillText}</span>${v.n}</h3>
       <div class="meta">${v.item || v.cat} · ${won(v.amt)} · ${curSite.name} · ${curQ}</div></div>
     <div style="display:flex;gap:10px;align-items:center">
       <span class="badge b-${g}" style="font-size:13.5px;padding:5px 14px">종합 ${GN[g]}</span>
@@ -1494,7 +1573,7 @@ function renderModalTable(){
     const f = finance(v);
     const matchFilter = modalFilter==="all" ? true 
       : modalFilter==="risk" ? f.g!=="ok"
-      : modalFilter==="install" ? v.inst : !v.inst;
+      : modalFilter==="sub" ? v.scope==="sub" : v.scope==="mat";
     const matchSearch = !modalSearchTerm || v.n.toLowerCase().includes(modalSearchTerm) || (v.item && v.item.toLowerCase().includes(modalSearchTerm)) || v.cat.toLowerCase().includes(modalSearchTerm);
     return matchFilter && matchSearch;
   });
@@ -1508,9 +1587,11 @@ function renderModalTable(){
   tb.innerHTML = rows.map(v=>{
     const f = finance(v);
     const isManaged = managedCids.includes(v.cid);
+    const pillClass = v.scope==="sub" ? "sub" : "mat";
+    const pillText = v.scope==="sub" ? "외주" : "자재";
     return `<tr>
       <td><input type="checkbox" class="mchk" data-cid="${v.cid}" ${isManaged ? 'checked' : ''} /></td>
-      <td><span class="pill ${v.inst?'install':'supply'}">${v.scope==="sub"?"외주":v.inst?"설치":"납품"}</span></td>
+      <td><span class="pill ${pillClass}">${pillText}</span></td>
       <td style="font-weight:700;text-align:left">${v.n}</td>
       <td style="text-align:left;color:var(--text-2)">${v.item || v.cat}</td>
       <td class="num">${won(v.amt)}</td>
