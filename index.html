@@ -183,18 +183,10 @@ body {
   padding-bottom: 10px;
   border-bottom: 1px solid var(--line);
 }
-.ts-title {
+.ts-head h3 {
   font-size: 16px;
   font-weight: 800;
   color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.ts-sub {
-  font-size: 12.5px;
-  color: var(--muted);
-  font-weight: 600;
 }
 .ts-list {
   display: flex;
@@ -203,9 +195,8 @@ body {
 }
 .ts-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: 9px 12px;
   background: var(--panel-2);
   border: 1px solid var(--line-soft);
   border-radius: 6px;
@@ -217,24 +208,21 @@ body {
   border-color: var(--sage);
   transform: translateX(2px);
 }
-.ts-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  overflow: hidden;
-}
 .ts-rank {
   font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 13.5px;
+  font-weight: 700;
   color: var(--muted);
-  width: 20px;
+  width: 24px;
   text-align: center;
   flex: none;
+  margin-right: 12px;
 }
-.ts-item:nth-child(1) .ts-rank { color: var(--red); }
-.ts-item:nth-child(2) .ts-rank { color: var(--gold); }
-.ts-item:nth-child(3) .ts-rank { color: var(--gold); }
+.ts-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
 .ts-name {
   font-weight: 700;
   font-size: 13.5px;
@@ -242,25 +230,37 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
 }
-.ts-meta {
+.ts-sub {
   font-size: 12px;
   color: var(--muted);
-  display: flex;
-  gap: 6px;
-  align-items: center;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
-.ts-right {
+.ts-tri {
   display: flex;
+  gap: 5px;
   align-items: center;
-  gap: 10px;
+  margin-right: 14px;
   flex: none;
 }
-.ts-amt {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--text-2);
+.ts-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
 }
+.ts-tag.fin { border: 1px solid #3f5570; color: #9bbde3; background: rgba(122,150,190,.15); }
+.ts-tag.resp { border: 1px solid var(--sage-deep); color: var(--sage-glow); background: rgba(138,166,124,.15); }
+.ts-tag.safe { border: 1px solid var(--gold-dim); color: var(--gold); background: rgba(217,164,65,.15); }
+.ts-tag.crit { border-color: rgba(194,93,83,.5); color: #ff8b80; background: rgba(194,93,83,.25); }
+.ts-tag.warn { border-color: rgba(217,164,65,.5); color: #f5c464; background: rgba(217,164,65,.25); }
+.ts-tag.ok { border-color: rgba(111,148,99,.5); color: #9cd28b; background: rgba(111,148,99,.25); }
 
 /* Sections & Toolbars */
 .section {
@@ -1274,7 +1274,7 @@ function renderTopSummaries(stats){
 
   const siteItems = topSites.map((x, idx)=>{
     return `<div class="ts-item" data-site="${x.site.name}">
-      <span class="ts-rank ${idx<3?'top3':''}">${idx+1}</span>
+      <span class="ts-rank">${idx+1}</span>
       <div class="ts-info">
         <div class="ts-name">${x.site.name}</div>
         <div class="ts-sub">${x.site.div} · 계약 ${x.cnt}건 · ${wonS(x.amt)}</div>
@@ -1287,7 +1287,7 @@ function renderTopSummaries(stats){
 
   const vendorItems = topVendors.map((v, idx)=>{
     return `<div class="ts-item" data-vsite="${v.siteName}" data-vn="${v.n}">
-      <span class="ts-rank ${idx<3?'top3':''}">${idx+1}</span>
+      <span class="ts-rank">${idx+1}</span>
       <div class="ts-info">
         <div class="ts-name">${v.n}</div>
         <div class="ts-sub">${v.siteName} · ${v.item || v.cat}</div>
@@ -1306,15 +1306,13 @@ function renderTopSummaries(stats){
   document.getElementById("topSummaries").innerHTML = `
     <div class="ts-card">
       <div class="ts-head">
-        <h3>주요 현장 리스크 현황</h3>
-        <span style="font-size:12.5px;color:var(--muted)">리스크 집중도 순</span>
+        <h3>주요 현장 현황</h3>
       </div>
       <div class="ts-list">${siteItems || '<div class="empty">위험 현장이 없습니다.</div>'}</div>
     </div>
     <div class="ts-card">
       <div class="ts-head">
-        <h3>중점 모니터링 협력업체</h3>
-        <span style="font-size:12.5px;color:var(--muted)">위험도 평가 순</span>
+        <h3>협력업체 현황</h3>
       </div>
       <div class="ts-list">${vendorItems || '<div class="empty">위험 업체가 없습니다.</div>'}</div>
     </div>
