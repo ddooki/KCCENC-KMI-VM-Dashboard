@@ -541,6 +541,17 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
 .calcbox b { color: var(--text-2); }
 .calcbox .res { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line-soft); color: var(--text); font-weight: 700; }
 
+/* Criteria Modal Layout */
+.crit-modal-body { display: flex; flex-direction: column; gap: 16px; }
+.crit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media(max-width: 900px) { .crit-grid { grid-template-columns: 1fr; } }
+.crit-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; }
+.crit-card-head { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; }
+.crit-sec-title { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+.crit-rule-item { margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
+.crit-rule-item:last-child { margin-bottom: 0; }
+.crit-overall-box { background: var(--panel-3); border: 1px solid var(--sage-deep); border-radius: 8px; padding: 14px 18px; }
+
 /* Page Routing */
 .page { display: none; }
 .page.on { display: block; }
@@ -560,10 +571,13 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
       <h1>협력업체 관리 대시보드</h1>
       <div class="site">■ 전사 현황</div>
     </div>
-    <div class="scopetabs" id="scopeTop">
-      <button class="on" data-s="all">종합</button>
-      <button data-s="sub">외주</button>
-      <button data-s="mat">자재</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="scopetabs" id="scopeTop">
+        <button class="on" data-s="all">종합</button>
+        <button data-s="sub">외주</button>
+        <button data-s="mat">자재</button>
+      </div>
+      <button class="btn" id="openCriteriaTop" style="padding:6px 13px;font-size:13px;font-weight:700">평가 기준</button>
     </div>
   </div>
 
@@ -639,10 +653,13 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
       <h1>협력업체 관리 대시보드</h1>
       <div class="site" id="siteName"></div>
     </div>
-    <div class="scopetabs" id="scopeSite">
-      <button class="on" data-s="all">종합</button>
-      <button data-s="sub">외주</button>
-      <button data-s="mat">자재</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="scopetabs" id="scopeSite">
+        <button class="on" data-s="all">종합</button>
+        <button data-s="sub">외주</button>
+        <button data-s="mat">자재</button>
+      </div>
+      <button class="btn" id="openCriteriaSite" style="padding:6px 13px;font-size:13px;font-weight:700">평가 기준</button>
     </div>
   </div>
 
@@ -771,6 +788,142 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
         <button class="btn btn-primary" id="addSelectedBtn">선택한 계약 추가하기 (<span id="selCount">0</span>건)</button>
         <button class="btn" id="closeModalBtn">닫기</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ 평가 기준 및 판정 체계 팝업 모달 ══════════ -->
+<div class="modal-overlay" id="criteriaModal">
+  <div class="modal-window" style="max-width:1180px">
+    <div class="modal-head">
+      <h3>협력업체 3대 리스크 평가 기준 및 종합 판정 체계</h3>
+      <button class="close" id="closeCriteriaModal">×</button>
+    </div>
+    <div class="modal-body crit-modal-body">
+      <!-- 3대 축 평가 기준 카드 -->
+      <div class="crit-grid">
+        <!-- 1. 재무평가 -->
+        <div class="crit-card">
+          <div class="crit-card-head">
+            <span>재무평가 기준</span>
+            <span class="pill mat" style="font-size:11px">신용·현금·R-MIS</span>
+          </div>
+          <div class="crit-rule-item">
+            <div class="crit-sec-title">■ 평가 지표 (3대 축)</div>
+            <div style="color:var(--text-2);font-size:12.5px;margin-bottom:8px">
+              · <b>신용등급</b> (AAA ~ D)<br>
+              · <b>현금흐름등급</b> (A+ ~ E)<br>
+              · <b>R-MIS 등급</b> (R-1 ~ R-7)
+            </div>
+          </div>
+          <div class="crit-rule-item">
+            <div class="crit-sec-title">■ 판정 기준</div>
+            <div style="font-size:12.5px;line-height:1.7">
+              <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
+                <span class="badge b-crit" style="flex:none">경보</span>
+                <span style="color:#ff8b80">신용 B- 이하 · 현금흐름 D/E · R-6 이상 중 1개 이상</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
+                <span class="badge b-warn" style="flex:none">주의</span>
+                <span style="color:#f5c464">신용 BB-~B0 · 현금흐름 C계열 · R-4~R-5 중 1개 이상</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px">
+                <span class="badge b-ok" style="flex:none">정상</span>
+                <span style="color:#9cd28b">3개 지표 모두 기준 이내 (신용 BBB-↑, 현금 B-↑, R-3↓)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 현장평가 -->
+        <div class="crit-card">
+          <div class="crit-card-head">
+            <span>현장평가 기준</span>
+            <span class="pill sub" style="font-size:11px">5대 리스크 항목</span>
+          </div>
+          <div class="crit-rule-item">
+            <div class="crit-sec-title">■ 평가 항목 & 배점</div>
+            <div style="color:var(--text-2);font-size:12.5px;margin-bottom:8px">
+              · <b>항목</b>: 사전협의, 납기, 설계변경, 품질대응, 정산클레임<br>
+              · <b>배점</b>: 무지적(0점) · 주의(△ 1점) · 경보(✕ 3점)
+            </div>
+          </div>
+          <div class="crit-rule-item">
+            <div class="crit-sec-title">■ 분기 지적점수 판정 기준</div>
+            <div style="font-size:12.5px;line-height:1.7">
+              <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
+                <span class="badge b-crit" style="flex:none">경보</span>
+                <span style="color:#ff8b80">현재 분기 지적 합산 <b>6점 이상</b></span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
+                <span class="badge b-warn" style="flex:none">주의</span>
+                <span style="color:#f5c464">지적 <b>3~5점</b> 또는 <b>동일 항목 3분기 연속 지적(*)</b></span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px">
+                <span class="badge b-ok" style="flex:none">정상</span>
+                <span style="color:#9cd28b">현재 분기 지적 합산 <b>0~2점</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 안전평가 -->
+        <div class="crit-card">
+          <div class="crit-card-head">
+            <span>안전평가 기준</span>
+            <span class="pill sub" style="font-size:11px">벌점제 · 입찰제한</span>
+          </div>
+          <div class="crit-rule-item">
+            <div class="crit-sec-title">■ 대상 & 벌점 체계</div>
+            <div style="color:var(--text-2);font-size:12.5px;margin-bottom:8px">
+              · <b>대상</b>: 설치계약 및 외주계약 (납품계약 제외)<br>
+              · <b>벌점</b>: 경고(1점) · 작업배제(2점) · 시정(1점) · 안전보장(2점)
+            </div>
+          </div>
+          <div class="crit-rule-item">
+            <div class="crit-sec-title">■ 누적 벌점 판정 기준 (공종별 기준 대비)</div>
+            <div style="font-size:12.5px;line-height:1.7">
+              <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
+                <span class="badge b-crit" style="flex:none">경보</span>
+                <span style="color:#ff8b80"><b>기준 벌점 초과</b> (초과 배수만큼 차년도 입찰제한)</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
+                <span class="badge b-warn" style="flex:none">주의</span>
+                <span style="color:#f5c464">기준 미달이나 <b>75% 이상 도달</b> (사전 경고 대상)</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px">
+                <span class="badge b-ok" style="flex:none">정상</span>
+                <span style="color:#9cd28b">누적 벌점 <b>기준 75% 미만</b> (제재 없음)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 종합 판정 체계 -->
+      <div class="crit-overall-box">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <h4 style="font-size:15px;font-weight:800;color:var(--sage-glow)">■ 협력업체 종합 판정 로직 (선행 감지 OR 체계)</h4>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;font-size:13px">
+          <div style="background:rgba(194,93,83,.15);border:1px solid rgba(194,93,83,.4);padding:10px 14px;border-radius:6px">
+            <b style="color:#ff8b80;font-size:13.5px">🚨 종합 경보</b>
+            <div style="color:var(--text-2);margin-top:4px;font-size:12px">재무 · 현장 · 안전 중 <b>단 하나라도 경보</b>가 발생한 경우</div>
+          </div>
+          <div style="background:rgba(217,164,65,.15);border:1px solid rgba(217,164,65,.4);padding:10px 14px;border-radius:6px">
+            <b style="color:#f5c464;font-size:13.5px">⚠️ 종합 주의</b>
+            <div style="color:var(--text-2);margin-top:4px;font-size:12px">경보가 없고, 3개 축 중 <b>단 하나라도 주의</b>가 발생한 경우</div>
+          </div>
+          <div style="background:rgba(111,148,99,.15);border:1px solid rgba(111,148,99,.4);padding:10px 14px;border-radius:6px">
+            <b style="color:#9cd28b;font-size:13.5px">✅ 종합 정상</b>
+            <div style="color:var(--text-2);margin-top:4px;font-size:12px">재무 · 현장 · 안전 <b>3개 축 모두 정상</b>인 경우</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div style="font-size:13px;color:var(--muted)">외주구매팀 협력업체 핵심관리지표(KMI) 운영 지침 기준</div>
+      <button class="btn" id="closeCriteriaBtn">닫기</button>
     </div>
   </div>
 </div>
@@ -1813,6 +1966,23 @@ document.getElementById("addSelectedBtn").addEventListener("click", ()=>{
   selected = null;
   renderSite();
 });
+
+// 평가 기준 모달 이벤트
+function openCriteriaModal(){
+  document.getElementById("criteriaModal").classList.add("open");
+}
+function closeCriteriaModal(){
+  document.getElementById("criteriaModal").classList.remove("open");
+}
+const btnCritTop = document.getElementById("openCriteriaTop");
+if(btnCritTop) btnCritTop.addEventListener("click", openCriteriaModal);
+const btnCritSite = document.getElementById("openCriteriaSite");
+if(btnCritSite) btnCritSite.addEventListener("click", openCriteriaModal);
+
+const btnCloseCrit = document.getElementById("closeCriteriaModal");
+if(btnCloseCrit) btnCloseCrit.addEventListener("click", closeCriteriaModal);
+const btnCloseCrit2 = document.getElementById("closeCriteriaBtn");
+if(btnCloseCrit2) btnCloseCrit2.addEventListener("click", closeCriteriaModal);
 
 document.getElementById("backLink").addEventListener("click", backTop);
 
