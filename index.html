@@ -303,29 +303,35 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13.5px;
+  font-size: 13px;
   text-align: center;
 }
 thead tr.g th { background: var(--panel-3); color: var(--text-2); font-weight: 700; padding: 7px 4px; }
 thead tr th {
   background: var(--panel-2);
-  color: var(--muted);
+  color: var(--text-2);
   font-size: 12.5px;
   font-weight: 700;
-  padding: 7px 4px;
+  padding: 8px 4px;
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
 }
 thead th.srt { cursor: pointer; user-select: none; }
-thead th.srt:hover { color: var(--text); background: var(--panel-3); }
+thead th.srt:hover { color: #fff; background: var(--panel-3); }
 thead th.srt.act { color: var(--sage-glow); }
-.ar { font-size: 10px; margin-left: 2px; color: var(--muted); }
+
+/* 정렬 인디케이터 위아래 세로 배치 및 가독성 개선 */
+.th-wrap { display: inline-flex; align-items: center; justify-content: center; gap: 3px; vertical-align: middle; }
+.ar { display: inline-flex; flex-direction: column; line-height: 0.65; font-size: 8px; margin-left: 2px; color: #6a7d71; font-family: monospace; font-weight: 800; vertical-align: middle; }
+.ar .u, .ar .d { display: inline-block; transition: .1s; }
+.ar .u.on { color: var(--sage-glow); font-size: 10px; font-weight: 900; }
+.ar .d.on { color: var(--sage-glow); font-size: 10px; font-weight: 900; }
 th.act .ar { color: var(--sage-glow); }
 
-/* Header Group Colors */
-.grp-fin { background: #182230 !important; color: #a4c2e6 !important; border-bottom: 2px solid #3d5a80 !important; }
-.grp-resp { background: #1b261c !important; color: #b2d4a5 !important; border-bottom: 2px solid #496b4c !important; }
-.grp-safe { background: #292418 !important; color: #e5c37d !important; border-bottom: 2px solid #7d6534 !important; }
+/* Header Group Colors - 갑지와 일치하는 차분하고 안정적인 배경 톤 */
+.grp-fin { background: var(--panel-3) !important; color: #a4c2e6 !important; border-bottom: 2px solid #3f5570 !important; }
+.grp-resp { background: var(--panel-3) !important; color: #b2d4a5 !important; border-bottom: 2px solid var(--sage-deep) !important; }
+.grp-safe { background: var(--panel-3) !important; color: #e5c37d !important; border-bottom: 2px solid var(--gold-dim) !important; }
 
 tbody tr { border-bottom: 1px solid var(--line-soft); transition: .1s; }
 tbody tr:hover { background: rgba(138,166,124,.05); }
@@ -526,26 +532,26 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
     <div class="tablescroll" id="gapjiWrap">
       <table id="gapji">
         <colgroup>
-          <col style="width:88px"><col style="width:auto"><col style="width:85px"><col style="width:115px">
+          <col style="width:84px"><col style="width:auto"><col style="width:80px"><col style="width:115px">
           <col style="width:120px"><col style="width:120px"><col style="width:120px">
-          <col style="width:110px"><col style="width:96px">
+          <col style="width:110px"><col style="width:94px">
         </colgroup>
         <thead>
           <tr class="g">
-            <th class="srt" data-k="div" rowspan="2">구분<span class="ar">▲▼</span></th>
-            <th class="name srt" data-k="name" rowspan="2">현장명<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="cnt" rowspan="2">계약수<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="amt" rowspan="2">계약금액<span class="ar">▲▼</span></th>
+            <th class="srt" data-k="div" rowspan="2"><div class="th-wrap">구분<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="name srt" data-k="name" rowspan="2"><div class="th-wrap">현장명<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="cnt" rowspan="2"><div class="th-wrap">계약수<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="amt" rowspan="2"><div class="th-wrap">계약금액<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
             <th class="grp-fin divl" colspan="1">재무평가</th>
             <th class="grp-resp" colspan="1">현장평가</th>
             <th class="grp-safe" colspan="1">안전평가</th>
-            <th class="divl srt" data-k="risk" rowspan="2">위험계약<br>합계<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="grade" rowspan="2">현장<br>판정<span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="risk" rowspan="2"><div class="th-wrap">위험계약<br>합계<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="grade" rowspan="2"><div class="th-wrap">현장<br>판정<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
           </tr>
           <tr>
-            <th class="divl srt" data-k="f">경보 · 주의<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r">경보 · 주의<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="s">경보 · 주의<span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="f"><div class="th-wrap">경보 · 주의<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="r"><div class="th-wrap">경보 · 주의<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="s"><div class="th-wrap">경보 · 주의<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
           </tr>
         </thead>
         <tbody id="gapjiBody"></tbody>
@@ -602,49 +608,49 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
     <div class="tablescroll">
       <table id="vtable">
         <colgroup>
-          <col style="width:260px"><col style="width:105px">
+          <col style="width:240px"><col style="width:105px">
           <!-- 재무평가 4열 -->
-          <col style="width:60px"><col style="width:70px"><col style="width:60px"><col style="width:75px">
+          <col style="width:62px"><col style="width:72px"><col style="width:62px"><col style="width:76px">
           <!-- 현장평가 7열 (5개 항목 + 점수 + 판정) -->
-          <col style="width:58px"><col style="width:50px"><col style="width:58px"><col style="width:58px"><col style="width:68px"><col style="width:60px"><col style="width:75px">
+          <col style="width:62px"><col style="width:50px"><col style="width:62px"><col style="width:62px"><col style="width:70px"><col style="width:60px"><col style="width:75px">
           <!-- 안전평가 8열 -->
-          <col style="width:110px"><col style="width:48px"><col style="width:46px"><col style="width:46px"><col style="width:46px"><col style="width:46px"><col style="width:52px"><col style="width:80px">
+          <col style="width:105px"><col style="width:48px"><col style="width:46px"><col style="width:46px"><col style="width:46px"><col style="width:46px"><col style="width:52px"><col style="width:78px">
           <!-- 종합 및 제외 -->
-          <col style="width:78px"><col style="width:44px">
+          <col style="width:75px"><col style="width:42px">
         </colgroup>
         <thead>
           <tr class="g">
-            <th class="name srt" data-k="name" rowspan="2">협력업체 / 계약품목<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="amt" rowspan="2">계약금액<span class="ar">▲▼</span></th>
+            <th class="name srt" data-k="name" rowspan="2"><div class="th-wrap">협력업체 / 계약품목<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="amt" rowspan="2"><div class="th-wrap">계약금액<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
             <th class="grp-fin divl" colspan="4">재무평가</th>
             <th class="grp-resp divl" colspan="7">현장평가</th>
             <th class="grp-safe divl" colspan="8">안전평가</th>
-            <th class="divl srt" data-k="og" rowspan="2">종합<br>판정<span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="og" rowspan="2"><div class="th-wrap">종합<br>판정<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
             <th rowspan="2" style="font-size:11px">제외</th>
           </tr>
           <tr>
             <!-- 재무 -->
-            <th class="divl srt" data-k="fc">신용<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="fh">현금흐름<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="fr">R-MIS<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="fg">재무판정<span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="fc"><div class="th-wrap">신용<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="fh"><div class="th-wrap">현금흐름<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="fr"><div class="th-wrap">R-MIS<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="fg"><div class="th-wrap">재무판정<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
             <!-- 현장 (5개 항목) -->
-            <th class="divl srt" data-k="r0">사전협의<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r1">납기<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r2">설계변경<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r3">품질대응<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="r4">정산클레임<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="sc">지적점수<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="rg">현장판정<span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="r0"><div class="th-wrap">사전협의<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="r1"><div class="th-wrap">납기<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="r2"><div class="th-wrap">설계변경<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="r3"><div class="th-wrap">품질대응<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="r4"><div class="th-wrap">정산클레임<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="sc"><div class="th-wrap">지적점수<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="rg"><div class="th-wrap">현장판정<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
             <!-- 안전 (8열) -->
-            <th class="divl srt" data-k="trade">공종<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="sstd">기준<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="sf0">경고<br><span style="font-size:9.5px;color:var(--muted)">1점</span></th>
-            <th class="srt" data-k="sf1">배제<br><span style="font-size:9.5px;color:var(--muted)">2점</span></th>
-            <th class="srt" data-k="sf2">시정<br><span style="font-size:9.5px;color:var(--muted)">1점</span></th>
-            <th class="srt" data-k="sf3">보장<br><span style="font-size:9.5px;color:var(--muted)">2점</span></th>
-            <th class="srt" data-k="sp">누적벌점<span class="ar">▲▼</span></th>
-            <th class="srt" data-k="sg">제재판정<span class="ar">▲▼</span></th>
+            <th class="divl srt" data-k="trade"><div class="th-wrap">공종<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="sstd"><div class="th-wrap">기준<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="sf0"><div class="th-wrap">경고<br><span style="font-size:9.5px;color:var(--muted)">1점</span></div></th>
+            <th class="srt" data-k="sf1"><div class="th-wrap">배제<br><span style="font-size:9.5px;color:var(--muted)">2점</span></div></th>
+            <th class="srt" data-k="sf2"><div class="th-wrap">시정<br><span style="font-size:9.5px;color:var(--muted)">1점</span></div></th>
+            <th class="srt" data-k="sf3"><div class="th-wrap">보장<br><span style="font-size:9.5px;color:var(--muted)">2점</span></div></th>
+            <th class="srt" data-k="sp"><div class="th-wrap">누적벌점<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="srt" data-k="sg"><div class="th-wrap">제재판정<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -1033,18 +1039,9 @@ const siteManagedMap = {};
 SITES.forEach(s => {
   siteManagedMap[s.name] = {};
   QUARTERS.forEach(q => {
-    siteManagedMap[s.name][q] = []; // 모든 현장 디폴트 공란
+    siteManagedMap[s.name][q] = []; // 모든 현장 디폴트 공란 (추가 버튼으로 문제 업체 등록)
   });
 });
-
-// 오퍼스 한강 스위첸만 데모 확인용으로 문제 있는 3개 계약을 기본 탑재
-if (siteManagedMap["오퍼스 한강 스위첸"]) {
-  const opContracts = REAL_SITE_DATA["오퍼스 한강 스위첸"] || [];
-  const riskContracts = opContracts.filter(c => c.fin && (c.fin.r >= 4 || CREDIT.indexOf(c.fin.c) >= CREDIT.indexOf("BB-")));
-  QUARTERS.forEach(q => {
-    siteManagedMap["오퍼스 한강 스위첸"][q] = riskContracts.slice(0, 3).map(c => c.cid);
-  });
-}
 
 const evalCache = {};
 function getEvalData(siteName, c, idx){
@@ -1305,9 +1302,19 @@ function renderTop(){
 
 function markSort(sel, st){
   document.querySelectorAll(sel+" th.srt").forEach(th=>{
-    th.classList.toggle("act", th.dataset.k===st.k);
-    const ar = th.querySelector(".ar");
-    if(ar) ar.textContent = th.dataset.k===st.k ? (st.d===1?"▲":"▼") : "▲▼";
+    const isAct = th.dataset.k === st.k;
+    th.classList.toggle("act", isAct);
+    const u = th.querySelector(".ar .u");
+    const d = th.querySelector(".ar .d");
+    if(u && d){
+      if(isAct){
+        u.classList.toggle("on", st.d === 1);
+        d.classList.toggle("on", st.d === -1);
+      } else {
+        u.classList.remove("on");
+        d.classList.remove("on");
+      }
+    }
   });
 }
 
