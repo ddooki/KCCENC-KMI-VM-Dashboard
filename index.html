@@ -576,9 +576,9 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
     <div class="sechead">
       <div style="display:flex;align-items:center;gap:12px">
         <h2>현장별 업체 상태 현황 (전체)</h2>
-        <button class="btn" id="toggleGapjiBtn" style="padding:5px 13px;font-size:13px;font-weight:700">전체 리스트 접기 ▲</button>
+        <button class="btn" id="toggleGapjiBtn" style="padding:5px 13px;font-size:13px;font-weight:700">전체 리스트 펼치기 (59개 현장) ▼</button>
       </div>
-      <div class="toolbar" id="gapjiToolbar">
+      <div class="toolbar" id="gapjiToolbar" style="display:none">
         <div class="search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
@@ -595,7 +595,7 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
         <select class="sel-q" id="qselTop"></select>
       </div>
     </div>
-    <div class="tablescroll" id="gapjiWrap">
+    <div class="tablescroll" id="gapjiWrap" style="display:none">
       <table id="gapji">
         <colgroup>
           <col style="width:84px"><col style="width:auto"><col style="width:80px"><col style="width:115px">
