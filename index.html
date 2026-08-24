@@ -41,35 +41,23 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--sage-glow)}
 .scopetabs button:hover{color:var(--text-2);background:var(--panel-2)}
 .scopetabs button.on{background:var(--sage-deep);color:#fff}
 
-/* 도넛 */
-.donuts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 14px}
-.dcard{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);
-  padding:15px 17px;display:flex;align-items:center;gap:17px}
-.dcard .dtitle{font-size:13px;font-weight:700;color:var(--sage);letter-spacing:.02em;margin-bottom:2px}
-.dcard .dsub{font-size:11.5px;color:var(--muted);margin-bottom:10px}
-.dlegend{display:flex;flex-direction:column;gap:5px}
-.dli{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-2);white-space:nowrap}
-.dot{width:9px;height:9px;border-radius:2px;flex:none}
-.dli .cnt{font-family:var(--mono);font-weight:800;font-size:13.5px;margin-left:auto;padding-left:10px}
-.dli .pct{font-family:var(--mono);font-size:11.5px;color:var(--muted);width:44px;text-align:right}
-.ring{flex:none;position:relative}
-.ring .ctr{position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;pointer-events:none}
-.ring .ctr .n{font-family:var(--mono);font-size:21px;font-weight:800;line-height:1;color:#fff}
-.ring .ctr .u{font-size:10px;color:var(--muted);margin-top:3px}
-.ring text{font-family:var(--mono);font-weight:800;font-size:10px}
-@media(max-width:1250px){.donuts{grid-template-columns:repeat(2,1fr)}}
-
-/* 구분별 스트립 */
-.divstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.dvcard{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);padding:13px 16px}
-.dvhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
-.dvhead .t{font-size:13.5px;font-weight:700}
-.dvhead .c{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
-.bar{height:11px;border-radius:3px;overflow:hidden;display:flex;background:var(--panel-3)}
-.bar span{display:block;height:100%}
-.barlg{display:flex;gap:13px;margin-top:8px;font-size:11.5px;color:var(--text-2)}
-.barlg i{font-style:normal;font-family:var(--mono);font-weight:700;margin-left:4px}
+/* 상단 통계 카드 (그래프 제거, 수치/배지 중심) */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 16px}
+.scard{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);
+  padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;gap:12px}
+.scard-head{display:flex;justify-content:space-between;align-items:flex-start}
+.scard .stitle{font-size:14px;font-weight:700;color:#ffffff;letter-spacing:.01em}
+.scard .ssub{font-size:12px;color:#ffffff;margin-top:3px;opacity:0.85}
+.scard-total{font-family:var(--mono);font-size:24px;font-weight:800;color:#ffffff;line-height:1}
+.scard-total .unit{font-size:12px;font-weight:600;color:#ffffff;margin-left:3px;opacity:0.8}
+.scard-badges{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.sbadge{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:5px;
+  font-size:12px;font-weight:700;font-family:var(--mono)}
+.sbadge.crit{background:rgba(194,93,83,.2);color:var(--red);border:1px solid var(--red-dim)}
+.sbadge.warn{background:rgba(217,164,65,.18);color:var(--gold);border:1px solid var(--gold-dim)}
+.sbadge.ok{background:rgba(111,148,99,.18);color:var(--ok);border:1px solid var(--sage-deep)}
+.sbadge .num{font-size:13px;font-weight:800;padding-right:0!important;color:inherit}
+@media(max-width:1250px){.stat-cards{grid-template-columns:repeat(2,1fr)}}
 
 /* 섹션 */
 .section{background:var(--panel);border:1px solid var(--line-soft);
@@ -78,15 +66,26 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--sage-glow)}
   padding:13px 16px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
 .sechead h2{font-size:15px;font-weight:700;display:flex;align-items:center;gap:9px}
 .sechead h2::before{content:"";width:3px;height:15px;background:var(--sage);border-radius:2px}
-.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .filters{display:flex;gap:6px;flex-wrap:wrap}
 .chip{background:transparent;border:1px solid var(--line);color:var(--muted);
   padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:600;
   cursor:pointer;font-family:inherit;transition:.15s}
 .chip:hover{color:var(--text-2);border-color:var(--sage-deep)}
 .chip.on{background:var(--sage-deep);border-color:var(--sage-deep);color:#fff}
-.sel-q{background:var(--panel-2);border:1px solid var(--line);color:var(--text-2);
-  padding:5px 11px;border-radius:7px;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer}
+.sel-q{background:var(--panel-2);border:1px solid var(--line);color:#ffffff;
+  padding:6px 12px;border-radius:7px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
+.sel-q option{background:#1e2922;color:#ffffff}
+
+/* 검색창 */
+.search-wrap{position:relative;display:flex;align-items:center}
+.search-wrap svg{position:absolute;left:10px;width:14px;height:14px;color:var(--muted);pointer-events:none}
+.search-input{background:var(--panel-2);border:1px solid var(--line);color:#ffffff;
+  padding:6px 12px 6px 31px;border-radius:7px;font-size:12.5px;font-family:inherit;
+  width:190px;transition:.15s;outline:none}
+.search-input::placeholder{color:var(--muted)}
+.search-input:focus{border-color:var(--sage-glow);background:var(--panel-3);width:230px;box-shadow:0 0 0 2px rgba(138,166,124,.15)}
+
 .btn{background:var(--panel-2);border:1px solid var(--line);color:var(--text-2);
   padding:5px 14px;border-radius:7px;font-size:12.5px;font-weight:700;
   cursor:pointer;font-family:inherit;transition:.15s}
@@ -94,8 +93,8 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--sage-glow)}
 .btn.on{background:var(--gold);border-color:var(--gold);color:#2a2005}
 
 /* 테이블 공통 */
-.tablescroll{overflow-x:auto}
-table{border-collapse:separate;border-spacing:0;table-layout:fixed}
+.tablescroll{overflow-x:auto;width:100%}
+table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
 thead th{background:var(--panel-2);font-size:12px;font-weight:600;color:var(--muted);
   padding:9px 6px;text-align:center;border-bottom:1px solid var(--line);
   white-space:nowrap;overflow:hidden}
@@ -123,7 +122,7 @@ tbody tr.sel td.name{background:var(--panel-3)}
 .empty{padding:44px;text-align:center;color:var(--muted);font-size:14px}
 
 /* 갑지 리스트 */
-#gapji{width:1420px}
+#gapji{width:100%}
 .slink{font-weight:700;font-size:14px;cursor:pointer;color:var(--text);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .slink:hover{color:var(--sage-glow);text-decoration:underline}
@@ -253,17 +252,21 @@ details.guide[open] summary::before{transform:rotate(90deg)}
     </div>
   </div>
 
-  <div class="donuts" id="topDonuts"></div>
-  <div class="divstrip" id="divStrip"></div>
+  <div class="stat-cards" id="topDonuts"></div>
 
   <div class="section">
     <div class="sechead">
-      <h2>현장별 위험업체 현황</h2>
+      <h2>현장별 업체 대응 현황</h2>
       <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="search-input" id="siteSearch" placeholder="현장명 검색..." />
+        </div>
         <div class="filters" id="sfilters">
           <button class="chip on" data-f="all">전체</button>
-          <button class="chip" data-f="crit">경보 현장</button>
-          <button class="chip" data-f="warn">주의 현장</button>
           <button class="chip" data-f="인프라">인프라</button>
           <button class="chip" data-f="건축">건축</button>
           <button class="chip" data-f="플랜트">플랜트</button>
@@ -274,9 +277,9 @@ details.guide[open] summary::before{transform:rotate(90deg)}
     <div class="tablescroll">
       <table id="gapji">
         <colgroup>
-          <col style="width:92px"><col style="width:330px"><col style="width:84px"><col style="width:112px">
-          <col style="width:150px"><col style="width:150px"><col style="width:150px">
-          <col style="width:112px"><col style="width:96px">
+          <col style="width:88px"><col style="width:auto"><col style="width:80px"><col style="width:110px">
+          <col style="width:120px"><col style="width:120px"><col style="width:120px">
+          <col style="width:110px"><col style="width:96px">
         </colgroup>
         <thead>
           <tr class="g">
@@ -322,7 +325,7 @@ details.guide[open] summary::before{transform:rotate(90deg)}
     </div>
   </div>
 
-  <div class="donuts" id="donuts"></div>
+  <div class="stat-cards" id="donuts"></div>
 
   <div class="section">
     <div class="sechead">
@@ -710,41 +713,26 @@ const wonS=n=>n>=1e12?(n/1e12).toFixed(2)+"조":Math.round(n/1e8).toLocaleString
 let curQ="26-3Q",editing=false,filter="all",selected=null;
 let scope="all", scopeTop="all", curSite=null;
 let sortT={k:null,d:1}, sortV={k:null,d:1};
+let siteSearchTerm="";
 
 const inScope=(v,sc)=> sc==="all"?true:v.scope===sc;
 
-// ══ 도넛 ══
-function donut(c,total,label,sub,unit){
-  const R0=34,SW=9,C=2*Math.PI*R0;
-  let off=0;
-  const segs=["crit","warn","ok"].filter(k=>c[k]>0).map(k=>{
-    const len=total?C*c[k]/total:0;
-    const s=`<circle cx="40" cy="40" r="${R0}" fill="none" stroke="${CLR[k]}" stroke-width="${SW}"
-      stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 40 40)"/>`;
-    off+=len;return s;
-  }).join("");
-  const pc=k=>total?Math.round(c[k]/total*100):0;
-  const lbl=["crit","warn","ok"].filter(k=>total&&c[k]/total>=0.08).map(k=>{
-    let a=0;["crit","warn","ok"].forEach(x=>{if(["crit","warn","ok"].indexOf(x)<["crit","warn","ok"].indexOf(k))a+=c[x]/total;});
-    const ang=(a+c[k]/total/2)*2*Math.PI-Math.PI/2;
-    return `<text x="${40+Math.cos(ang)*R0}" y="${40+Math.sin(ang)*R0+3.5}" fill="#12180f"
-      text-anchor="middle">${pc(k)}%</text>`;
-  }).join("");
-  const row=(k,nm)=>`<div class="dli"><span class="dot" style="background:${CLR[k]}"></span>${nm}
-    <span class="cnt" style="color:${CLR[k]}">${c[k]}</span>
-    <span class="pct">(${pc(k)}%)</span></div>`;
-  return `<div class="dcard">
-    <div class="ring" style="width:80px;height:80px">
-      <svg width="80" height="80" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r="${R0}" fill="none" stroke="#2a3830" stroke-width="${SW}"/>
-        ${segs}${lbl}
-      </svg>
-      <div class="ctr"><div class="n">${total}</div><div class="u">${unit}</div></div>
+// ══ 통계 카드 (그래프 제거, 퍼센트 제거, 수치/배지 표기, 흰색 텍스트 통일) ══
+function statCard(c,total,label,sub,unit){
+  return `<div class="scard">
+    <div class="scard-head">
+      <div>
+        <div class="stitle">${label}</div>
+        <div class="ssub">${sub}</div>
+      </div>
+      <div class="scard-total">${total}<span class="unit">${unit}</span></div>
     </div>
-    <div style="flex:1;min-width:0">
-      <div class="dtitle">${label}</div><div class="dsub">${sub}</div>
-      <div class="dlegend">${row("crit","경보")}${row("warn","주의")}${row("ok","정상")}</div>
-    </div></div>`;
+    <div class="scard-badges">
+      <span class="sbadge crit">경보 <span class="num">${c.crit}</span></span>
+      <span class="sbadge warn">주의 <span class="num">${c.warn}</span></span>
+      <span class="sbadge ok">정상 <span class="num">${c.ok}</span></span>
+    </div>
+  </div>`;
 }
 function tally(list,fn){const c={ok:0,warn:0,crit:0};list.forEach(v=>{const g=fn(v);if(g)c[g]++;});return c;}
 
@@ -764,31 +752,16 @@ function renderTop(){
   const all=stats.flatMap(x=>x.list);
   const inst=all.filter(v=>v.inst);
   document.getElementById("topDonuts").innerHTML=
-    donut(sc,stats.length,"현장 종합 판정",`전사 ${stats.length}개 현장 · ${curQ}`,"현장")+
-    donut(tally(all,v=>respGrade(v,curQ)),all.length,"대응도 기준",`전체 계약관계 ${all.length}건`,"업체")+
-    donut(tally(inst,v=>safety(v).g),inst.length,"안전 기준",`설치·외주계약 ${inst.length}건 한정`,"업체")+
-    donut(tally(all,v=>finance(v).g),all.length,"재무 기준",`전체 계약관계 ${all.length}건`,"업체");
+    statCard(sc,stats.length,"현장 종합 판정",`전사 ${stats.length}개 현장 · ${curQ}`,"현장")+
+    statCard(tally(all,v=>respGrade(v,curQ)),all.length,"대응도 기준",`전체 계약관계 ${all.length}건`,"업체")+
+    statCard(tally(inst,v=>safety(v).g),inst.length,"안전 기준",`설치·외주계약 ${inst.length}건 한정`,"업체")+
+    statCard(tally(all,v=>finance(v).g),all.length,"재무 기준",`전체 계약관계 ${all.length}건`,"업체");
 
-  document.getElementById("divStrip").innerHTML=["인프라","건축","플랜트"].map(d=>{
-    const g=stats.filter(x=>x.site.div===d);
-    const c={ok:0,warn:0,crit:0};g.forEach(x=>c[x.grade]++);
-    const t=g.length||1;
-    return `<div class="dvcard">
-      <div class="dvhead"><span class="t"><span class="dvtag dv-${d}">${d}</span></span>
-        <span class="c">${g.length}개 현장 · ${wonS(g.reduce((a,x)=>a+x.amt,0))}</span></div>
-      <div class="bar">
-        <span style="background:${CLR.crit};width:${c.crit/t*100}%"></span>
-        <span style="background:${CLR.warn};width:${c.warn/t*100}%"></span>
-        <span style="background:${CLR.ok};width:${c.ok/t*100}%"></span></div>
-      <div class="barlg">
-        <span style="color:${CLR.crit}">경보<i>${c.crit}</i></span>
-        <span style="color:${CLR.warn}">주의<i>${c.warn}</i></span>
-        <span style="color:${CLR.ok}">정상<i>${c.ok}</i></span></div></div>`;
-  }).join("");
-
-  let rows=stats.filter(x=>
-    sfilter==="all"?true : sfilter==="crit"?x.grade==="crit"
-    : sfilter==="warn"?x.grade==="warn" : x.site.div===sfilter);
+  let rows=stats.filter(x=>{
+    const matchDiv = sfilter==="all" || x.site.div===sfilter;
+    const matchSearch = !siteSearchTerm || x.site.name.toLowerCase().includes(siteSearchTerm);
+    return matchDiv && matchSearch;
+  });
 
   const GO={crit:0,warn:1,ok:2};
   const key={div:x=>DIVORD[x.site.div],name:x=>x.site.name,cnt:x=>x.cnt,amt:x=>x.amt,
@@ -832,10 +805,10 @@ function renderDonuts(){
   const L=curList(), inst=L.filter(v=>v.inst);
   const ct=L.reduce((a,v)=>a+v.ct.length,0);
   document.getElementById("donuts").innerHTML=
-    donut(tally(L,v=>overall(v,curQ)),L.length,"종합 판정",`계약 ${ct}건 · ${wonS(L.reduce((a,v)=>a+v.amt,0))} · ${curQ}`,"업체")+
-    donut(tally(L,v=>respGrade(v,curQ)),L.length,"대응도 기준",`전체 ${L.length}개사 · 분기 평가`,"업체")+
-    donut(tally(inst,v=>safety(v).g),inst.length,"안전 기준",`설치·외주 ${inst.length}개사 한정`,"업체")+
-    donut(tally(L,v=>finance(v).g),L.length,"재무 기준",`전체 ${L.length}개사 · 이크레더블`,"업체");
+    statCard(tally(L,v=>overall(v,curQ)),L.length,"종합 판정",`계약 ${ct}건 · ${wonS(L.reduce((a,v)=>a+v.amt,0))} · ${curQ}`,"업체")+
+    statCard(tally(L,v=>respGrade(v,curQ)),L.length,"대응도 기준",`전체 ${L.length}개사 · 분기 평가`,"업체")+
+    statCard(tally(inst,v=>safety(v).g),inst.length,"안전 기준",`설치·외주 ${inst.length}개사 한정`,"업체")+
+    statCard(tally(L,v=>finance(v).g),L.length,"재무 기준",`전체 ${L.length}개사 · 이크레더블`,"업체");
 }
 function renderTable(){
   let rows=curList().map(v=>({v,g:overall(v,curQ)}))
@@ -995,6 +968,10 @@ document.getElementById("scopeSite").addEventListener("click",e=>{
   scope=b.dataset.s;selected=null;
   document.querySelectorAll("#scopeSite button").forEach(x=>x.classList.toggle("on",x===b));
   renderSite();
+});
+document.getElementById("siteSearch").addEventListener("input",e=>{
+  siteSearchTerm=e.target.value.trim().toLowerCase();
+  renderTop();
 });
 document.getElementById("sfilters").addEventListener("click",e=>{
   const b=e.target.closest("button[data-f]");if(!b)return;
