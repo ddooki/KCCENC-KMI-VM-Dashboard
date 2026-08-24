@@ -1,21 +1,127 @@
 import json, hashlib, re
 
-with open('parsed_contracts.json', 'r', encoding='utf-8') as f:
-    data = json.load(f)
+# 1. Parse Excel contracts
+import win32com.client, os
 
-site_div_map = data['site_div_map']
-site_code_map = data['site_code_map']
-mat_contracts = data['mat_contracts']
-sub_contracts = data['sub_contracts']
+excel = win32com.client.Dispatch('Excel.Application')
+excel.Visible = False
+excel.DisplayAlerts = False
+try:
+    full_path = os.path.abspath('계약 현황.xlsx')
+    wb = excel.Workbooks.Open(full_path)
+    
+    sh_mat = wb.Sheets(2)
+    mat_data = sh_mat.UsedRange.Value2
+    
+    sh_sub = wb.Sheets(1)
+    sub_data = sh_sub.UsedRange.Value2
+    
+    wb.Close(False)
+finally:
+    excel.Quit()
 
+site_code_map = {}
+site_div_map = {}
+
+mat_contracts = []
+excluded_field_contracts = 0
+
+for r in range(2, len(mat_data)):
+    row = mat_data[r]
+    if not row or len(row) < 14:
+        continue
+    code = str(row[0] or '').strip()
+    site = str(row[1] or '').strip()
+    cat = str(row[2] or '').strip()
+    contract_type = str(row[4] or '').strip() # 납품계약 / 설치계약
+    item_name = str(row[5] or '').strip()
+    vendor = str(row[6] or '').strip()
+    buyer = str(row[8] or '').strip() # 본사 / 현장
+    amt = row[13]
+    
+    if not site or not vendor or site == '현장명':
+        continue
+        
+    # 현장계약 제외 필터링 (본사 구매만 포함)
+    if buyer == '현장':
+        excluded_field_contracts += 1
+        continue
+        
+    try:
+        amt_num = float(amt) if amt is not None else 0.0
+    except:
+        amt_num = 0.0
+        
+    if code and site:
+        site_code_map[site] = code
+        first_c = code[0].upper()
+        if first_c == 'A':
+            site_div_map[site] = '인프라'
+        elif first_c == 'B':
+            site_div_map[site] = '건축'
+        elif first_c == 'D':
+            site_div_map[site] = '플랜트'
+            
+    mat_contracts.append({
+        'site': site,
+        'code': code,
+        'cat': cat,
+        'inst': '설치' in contract_type,
+        'contract_type': contract_type or '납품계약',
+        'item': item_name,
+        'vendor': vendor,
+        'amt': amt_num,
+        'scope': 'mat'
+    })
+
+print(f'자재계약 파싱 완료: 본사계약 {len(mat_contracts)}건 포함 (현장계약 {excluded_field_contracts}건 제외됨)')
+
+sub_contracts = []
+for r in range(1, len(sub_data)):
+    row = sub_data[r]
+    if not row or len(row) < 9:
+        continue
+    site = str(row[3] or '').strip()
+    work_name = str(row[4] or '').strip()
+    vendor = str(row[5] or '').strip()
+    period = str(row[6] or '').strip()
+    amt = row[8]
+    
+    if not site or not vendor or site == '현장명':
+        continue
+        
+    try:
+        amt_num = float(amt) if amt is not None else 0.0
+    except:
+        amt_num = 0.0
+        
+    sub_contracts.append({
+        'site': site,
+        'cat': f'외주 · {work_name}',
+        'inst': True,
+        'contract_type': '외주계약',
+        'item': work_name,
+        'vendor': vendor,
+        'period': period,
+        'amt': amt_num,
+        'scope': 'sub'
+    })
+
+print(f'외주계약 파싱 완료: {len(sub_contracts)}건')
+
+# Infer site division
 infra_keywords = ['고속도로', '철도', '도로', '택지', '전력구', '상수도', '터널', '포장', '유도로', '탄약고', '지하철', '7호선', '교량', '연안정비', '용수도']
 plant_keywords = ['플랜트', '공장', 'GEL', 'BLEND', 'HPC', '데이터센터']
 
-for s in site_div_map:
-    if any(k in s for k in infra_keywords):
-        site_div_map[s] = '인프라'
-    elif any(k in s for k in plant_keywords):
-        site_div_map[s] = '플랜트'
+all_sites = set(list(site_code_map.keys()) + [x['site'] for x in mat_contracts] + [x['site'] for x in sub_contracts])
+for s in all_sites:
+    if s not in site_div_map:
+        if any(k in s for k in infra_keywords):
+            site_div_map[s] = '인프라'
+        elif any(k in s for k in plant_keywords):
+            site_div_map[s] = '플랜트'
+        else:
+            site_div_map[s] = '건축'
 
 # Group contracts by site -> vendor
 site_vendor_contracts = {}
@@ -50,7 +156,7 @@ CASH_LIST = ['A+','A0','A-','B+','B0','B-','C+','C0','C-','D','E']
 vendor_fin_map = {}
 for v in sorted(unique_vendors):
     h = int(hashlib.md5(v.encode('utf-8')).hexdigest(), 16)
-    r_val = (h % 7) + 1 # 1 to 7
+    r_val = (h % 7) + 1
     c_idx = (h >> 3) % len(CREDIT_LIST)
     h_idx = (h >> 6) % len(CASH_LIST)
     
@@ -133,7 +239,7 @@ for s, v_dict in site_vendor_contracts.items():
 
 DIV_ORDER = {'인프라': 0, '건축': 1, '플랜트': 2}
 sites_arr = []
-for s in sorted(site_div_map.keys(), key=lambda x: (DIV_ORDER.get(site_div_map[x], 3), x)):
+for s in sorted(site_div_map.keys(), key=lambda x: (DIV_ORDER.get(site_div_map[s], 3), x)):
     sites_arr.append({
         'name': s,
         'div': site_div_map[s],
@@ -148,13 +254,12 @@ js_real_data = json.dumps(real_site_data, ensure_ascii=False)
 with open('index.html', 'r', encoding='utf-8') as f:
     html = f.read()
 
-# Replace SITES and siteVendors logic
-pattern = r'(// ══ 현장 마스터 ══[\s\S]*?)(function genSf\(rd,inst\)\{)'
-replacement = f'''// ══ 현장 마스터 (실제 계약 현황 59개 현장) ══
+pattern = r'(// ══ 현장 마스터[\s\S]*?)(function genSf\(rd,inst\)\{)'
+replacement = f'''// ══ 현장 마스터 (실제 본사 계약 현황 59개 현장) ══
 const SITES = {js_sites};
 const DIVORD = {{인프라:0, 건축:1, 플랜트:2}};
 
-// ══ 실제 계약 데이터 맵 (총 {len(sites_arr)}개 현장, {len(unique_vendors)}개 협력사) ══
+// ══ 실제 본사 계약 데이터 맵 (총 {len(sites_arr)}개 현장, {len(unique_vendors)}개 협력사, 현장계약 제외) ══
 const REAL_SITE_DATA = {js_real_data};
 
 function hash(s){{let h=2166136261;for(let i=0;i<s.length;i++){{h^=s.charCodeAt(i);h=Math.imul(h,16777619);}}return h>>>0;}}
@@ -185,4 +290,4 @@ new_html = re.sub(pattern, replacement, html)
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(new_html)
 
-print('SUCCESSFULLY UPDATED index.html WITH REAL DATA!')
+print('SUCCESSFULLY UPDATED index.html EXCLUDING FIELD CONTRACTS!')
