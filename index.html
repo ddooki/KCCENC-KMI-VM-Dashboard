@@ -1576,8 +1576,6 @@ function renderTable(){
       const A = kf(a), B = kf(b);
       return (typeof A==="string" ? A.localeCompare(B,"ko") : A-B) * sortV.d;
     });
-  } else {
-    rows.sort((a,b)=>GO[a.g]-GO[b.g] || b.v.amt-a.v.amt);
   }
 
   const tb = document.getElementById("tbody");
