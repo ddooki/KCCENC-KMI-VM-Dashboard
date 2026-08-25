@@ -742,6 +742,80 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
   </div>
 </div>
 
+<!-- ══════════ 협력업체 전사 종합 대시보드 ══════════ -->
+<div class="page" id="pgVendor">
+  <div class="topbar">
+    <div>
+      <div class="crumb"><a id="backLinkVendor">← 전체리스트 보기</a></div>
+      <h1>협력업체 전사 종합 대시보드</h1>
+      <div class="site" id="vendorHeaderTitle" style="color:var(--sage-glow)"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="scopetabs" id="scopeVendor">
+        <button class="on" data-s="all">종합</button>
+        <button data-s="sub">외주</button>
+        <button data-s="mat">자재</button>
+      </div>
+      <button class="btn" id="openCriteriaVendor" style="padding:6px 13px;font-size:13px;font-weight:700">평가 기준</button>
+    </div>
+  </div>
+
+  <!-- 상단 4대 통계 카드 (현장과 동일한 디자인 틀) -->
+  <div class="stat-cards" id="vendorStatCards"></div>
+
+  <!-- 업체 종합 상세 분석 패널 (3개 컬럼) -->
+  <div class="detail show" id="vendorDetailPanel" style="margin-bottom:20px"></div>
+
+  <!-- 하단 참여 현장별 계약 및 리스크 목록 테이블 -->
+  <div class="section">
+    <div class="sechead">
+      <h2>참여 현장별 계약 및 리스크 현황</h2>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="search-input" id="vendorSiteSearch" placeholder="현장명, 품목 검색..." />
+        </div>
+        <select class="sel-q" id="qselVendor"></select>
+        <div class="filters" id="vendorFilters">
+          <button class="chip on" data-f="all">전체</button>
+          <button class="chip" data-f="sub">외주</button>
+          <button class="chip" data-f="mat">자재</button>
+        </div>
+      </div>
+    </div>
+    <div class="tablescroll">
+      <table id="vendorTable">
+        <colgroup>
+          <col style="width:200px">
+          <col style="width:70px">
+          <col style="width:200px">
+          <col style="width:110px">
+          <col style="width:115px">
+          <col style="width:140px">
+          <col style="width:85px">
+          <col style="width:105px">
+        </colgroup>
+        <thead>
+          <tr class="g">
+            <th class="name srt" data-k="site"><div class="th-wrap">참여 현장명<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th>구분</th>
+            <th>계약 품목 / 공종</th>
+            <th class="srt" data-k="amt"><div class="th-wrap">계약금액<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="divl srt" data-k="rg"><div class="th-wrap">현장평가<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="divl srt" data-k="sg"><div class="th-wrap">안전평가<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th class="divl srt" data-k="og"><div class="th-wrap">종합판정<span class="ar"><span class="u">▲</span><span class="d">▼</span></span></div></th>
+            <th>현장 상세</th>
+          </tr>
+        </thead>
+        <tbody id="vendorTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ 전체 계약현황 조회 및 추가 팝업 모달 ══════════ -->
 <div class="modal-overlay" id="contractModal">
   <div class="modal-window">
@@ -885,11 +959,11 @@ tbody td { padding: 8px 4px; vertical-align: middle; }
             <div style="font-size:12.5px;line-height:1.7">
               <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
                 <span class="badge b-crit" style="flex:none">경보</span>
-                <span style="color:#ff8b80"><b>기준 벌점 초과</b> (초과 배수만큼 차년도 입찰제한)</span>
+                <span style="color:#ff8b80"><b>기준 110% 이상 (올림 적용)</b> (110% 1회, 120% 2회 차년도 입찰제한)</span>
               </div>
               <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">
                 <span class="badge b-warn" style="flex:none">주의</span>
-                <span style="color:#f5c464">기준 미달이나 <b>75% 이상 도달</b> (사전 경고 대상)</span>
+                <span style="color:#f5c464">기준점수(100%) 도달 또는 <b>75% 이상 도달</b> (사전 주의 대상)</span>
               </div>
               <div style="display:flex;align-items:flex-start;gap:6px">
                 <span class="badge b-ok" style="flex:none">정상</span>
@@ -1332,13 +1406,25 @@ function respGrade(v, q){
   const s = respScore(v, q);
   return s >= 6 ? "crit" : s >= 3 ? "warn" : (streaks(v, q).length ? "warn" : "ok");
 }
+function getBans(p, std){
+  if(p < Math.ceil(std * 1.1)) return 0;
+  let k = 1;
+  while(p >= Math.ceil(std * (1 + 0.1 * (k + 1)))) {
+    k++;
+  }
+  return k;
+}
+
 function safety(v){
   if(!v.inst) return {na:true};
   const std = TRADE_STD[v.trade] ?? 4;
   const sf = v.sf || {경고:0, 배제:0, 시정:0, 보장:0};
   const p = (sf.경고||0)*1 + (sf.배제||0)*2 + (sf.시정||0)*1 + (sf.보장||0)*2;
-  const bans = p > std ? Math.ceil(p/std)-1 : 0;
-  return {na:false, std, p, bans, g:bans>=1?"crit":(p>=std*0.75?"warn":"ok")};
+  const bans = getBans(p, std);
+  const ban1Std = Math.ceil(std * 1.1);
+  const ban2Std = Math.ceil(std * 1.2);
+  const g = bans >= 1 ? "crit" : (p >= std ? "warn" : (p >= std * 0.75 ? "warn" : "ok"));
+  return {na:false, std, p, bans, ban1Std, ban2Std, g};
 }
 function finance(v){
   if(!v.fin) return {g:"ok", crit:false, warn:false};
@@ -1369,6 +1455,11 @@ let siteSearchTerm = "", vendorSearchTerm = "", modalSearchTerm = "";
 let modalFilter = "all";
 let curSite = null, selected = null;
 let sortT = {k:null, d:1}, sortV = {k:null, d:1};
+
+// 협력업체 전사 대시보드 상태 변수
+let curVendor = null;
+let vendorScope = "all", vendorFilter = "all", vendorSearchSiteTerm = "";
+let sortVendorTable = {k:null, d:1};
 
 const inScope = (v, sc) => sc==="all" ? true : sc==="sub" ? v.scope==="sub" : v.scope==="mat";
 
@@ -1677,9 +1768,10 @@ function renderDetail(){
        <div class="kv"><span class="k">작업배제 (2점)</span><span class="v">${v.sf.배제}건 · ${v.sf.배제*2}점</span></div>
        <div class="kv"><span class="k">시정조치 (1점)</span><span class="v">${v.sf.시정}건 · ${v.sf.시정}점</span></div>
        <div class="kv"><span class="k">안전보장 (2점)</span><span class="v">${v.sf.보장}건 · ${v.sf.보장*2}점</span></div>
-       <div class="calcbox">누적 벌점 <b>${s.p}점</b> ÷ 기준 <b>${s.std}점</b> = <b>${(s.p/s.std).toFixed(2)}배</b>
-         <div class="res">${s.bans>=1 ? `기준 ${s.bans}배 초과 → <span style="color:var(--red)">차년도 입찰제한 ${s.bans}회</span>`
-           : s.g==="warn" ? `기준 미달이나 75% 이상 도달 → <span style="color:var(--gold)">사전 경고 대상</span>` : "기준 이내 → 제재 없음"}</div></div>`;
+       <div class="calcbox">누적 벌점 <b>${s.p}점</b> / 기준 <b>${s.std}점</b> (110% 올림: <b>${s.ban1Std}점</b>, 120% 올림: <b>${s.ban2Std}점</b>)
+         <div class="res">${s.bans>=1 ? `기준 ${s.bans===1?'110%':'120% 이상'} 초과 (${s.p}점) → <span style="color:var(--red);font-weight:800">차년도 입찰제한 ${s.bans}회</span>`
+           : s.p>=s.std ? `기준점수(${s.std}점) 도달/초과 → <span style="color:var(--gold)">사전 주의 (110%인 ${s.ban1Std}점 이상 시 입찰제한 1회)</span>`
+           : s.g==="warn" ? `기준 75% 이상 도달 → <span style="color:var(--gold)">주의 관찰 대상</span>` : "기준 이내 → 제재 없음"}</div></div>`;
 
   const rr = v.fin.r>=6 ? "위험" : v.fin.r>=4 ? "주의" : "정상";
   d.className = "detail show";
@@ -1708,6 +1800,272 @@ function renderDetail(){
 }
 
 function renderSite(){ renderDonuts(); renderTable(); renderDetail(); }
+
+// ══════════ 협력업체 전사 종합 뷰 로직 ══════════
+function getVendorAllData(vendorName){
+  const contracts = [];
+  SITES.forEach(s => {
+    const list = siteAllVendors(s);
+    list.forEach(v => {
+      if(v.n === vendorName){
+        contracts.push({ site: s, v });
+      }
+    });
+  });
+  return contracts;
+}
+
+function openVendor(name){
+  curVendor = name;
+  curSite = null;
+  selected = null;
+  vendorScope = "all";
+  vendorFilter = "all";
+  vendorSearchSiteTerm = "";
+  sortVendorTable = {k:null, d:1};
+  
+  const vSearch = document.getElementById("vendorSiteSearch");
+  if(vSearch) vSearch.value = "";
+  document.querySelectorAll("#vendorFilters .chip").forEach(c=>c.classList.toggle("on", c.dataset.f==="all"));
+  document.querySelectorAll("#scopeVendor button").forEach(b=>b.classList.toggle("on", b.dataset.s==="all"));
+  
+  document.getElementById("pgTop").classList.remove("on");
+  document.getElementById("pgSite").classList.remove("on");
+  document.getElementById("pgVendor").classList.add("on");
+  window.scrollTo(0,0);
+  renderVendorView();
+}
+
+function renderVendorView(){
+  if(!curVendor) return;
+  const allContracts = getVendorAllData(curVendor);
+  if(!allContracts.length) return;
+
+  const sampleV = allContracts[0].v;
+  const totalAmt = allContracts.reduce((a,c)=>a+c.v.amt, 0);
+  const siteCount = new Set(allContracts.map(c=>c.site.name)).size;
+  const f = finance(sampleV);
+  const fGrade = f.g;
+
+  // 참여 현장들 중 최고 리스크 계산
+  const siteGrades = allContracts.map(c => overall(c.v, curQ));
+  const overallCrit = siteGrades.filter(g => g === "crit").length;
+  const overallWarn = siteGrades.filter(g => g === "warn").length;
+  const overallOk = siteGrades.filter(g => g === "ok").length;
+  const topOverallG = overallCrit > 0 ? "crit" : (overallWarn > 0 ? "warn" : "ok");
+
+  // 현장평가 종합
+  const respScores = allContracts.map(c => respScore(c.v, curQ));
+  const maxRespScore = Math.max(...respScores, 0);
+  const respGrades = allContracts.map(c => respGrade(c.v, curQ));
+  const topRespG = respGrades.includes("crit") ? "crit" : (respGrades.includes("warn") ? "warn" : "ok");
+
+  // 안전평가 종합 (전사 합산 또는 대표 공종)
+  const isInst = allContracts.some(c => c.v.inst);
+  let totalSafeP = 0;
+  let totalBans = 0;
+  let sampleStd = 4;
+  let safeG = "ok";
+  if(isInst){
+    const std = TRADE_STD[sampleV.trade] ?? 4;
+    sampleStd = std;
+    allContracts.forEach(c => {
+      if(c.v.inst){
+        const sf = c.v.sf || {경고:0,배제:0,시정:0,보장:0};
+        totalSafeP += (sf.경고||0)*1 + (sf.배제||0)*2 + (sf.시정||0)*1 + (sf.보장||0)*2;
+      }
+    });
+    totalBans = getBans(totalSafeP, std);
+    safeG = totalBans >= 1 ? "crit" : (totalSafeP >= std ? "warn" : (totalSafeP >= std * 0.75 ? "warn" : "ok"));
+  }
+
+  // 상단 헤더
+  const pillClass = sampleV.scope === "sub" ? "sub" : "mat";
+  const pillText = sampleV.scope === "sub" ? "외주" : "자재";
+  document.getElementById("vendorHeaderTitle").innerHTML = `
+    ■ 협력업체명 : <b style="color:#fff">${curVendor}</b> 
+    <span class="pill ${pillClass}" style="margin-left:8px;font-size:12px">${pillText} · ${sampleV.trade || sampleV.cat}</span>
+    <span style="font-size:13px;font-weight:400;color:var(--text-2);margin-left:10px">
+      계약 현장 <b>${siteCount}개소</b> · 총 계약 <b>${allContracts.length}건</b> · 총 계약금액 <b>${wonS(totalAmt)}</b>
+    </span>`;
+
+  // 1. Stat Cards (4개 카드)
+  const scWrap = document.getElementById("vendorStatCards");
+  const finTally = {crit: f.crit?1:0, warn: f.warn?1:0, ok: (!f.crit&&!f.warn)?1:0};
+  const respTally = {crit: respGrades.filter(g=>g==="crit").length, warn: respGrades.filter(g=>g==="warn").length, ok: respGrades.filter(g=>g==="ok").length};
+  const safeTally = {crit: safeG==="crit"?1:0, warn: safeG==="warn"?1:0, ok: safeG==="ok"?1:0};
+
+  scWrap.innerHTML = `
+    <div class="scard">
+      <div class="scard-head">
+        <div>
+          <div class="stitle">전사 종합 판정</div>
+          <div class="ssub">참여 현장 ${allContracts.length}건 종합 · ${curQ}</div>
+        </div>
+        <div class="scard-total"><span class="badge b-${topOverallG}" style="font-size:13.5px;padding:5px 12px">${GN[topOverallG]}</span></div>
+      </div>
+      <div class="scard-badges">
+        <span class="sbadge crit">경보 <span class="num">${overallCrit}</span></span>
+        <span class="sbadge warn">주의 <span class="num">${overallWarn}</span></span>
+        <span class="sbadge ok">정상 <span class="num">${overallOk}</span></span>
+      </div>
+    </div>
+    <div class="scard">
+      <div class="scard-head">
+        <div>
+          <div class="stitle">전사 재무평가</div>
+          <div class="ssub">신용 ${sampleV.fin.c} · 현금 ${sampleV.fin.h} · R-${sampleV.fin.r}</div>
+        </div>
+        <div class="scard-total"><span class="badge b-${fGrade}" style="font-size:13.5px;padding:5px 12px">${GN[fGrade]}</span></div>
+      </div>
+      <div class="scard-badges">
+        <span class="sbadge crit">경보 <span class="num">${finTally.crit}</span></span>
+        <span class="sbadge warn">주의 <span class="num">${finTally.warn}</span></span>
+        <span class="sbadge ok">정상 <span class="num">${finTally.ok}</span></span>
+      </div>
+    </div>
+    <div class="scard">
+      <div class="scard-head">
+        <div>
+          <div class="stitle">전사 현장평가</div>
+          <div class="ssub">최고 지적 ${maxRespScore}점 · 참여 ${allContracts.length}건</div>
+        </div>
+        <div class="scard-total"><span class="badge b-${topRespG}" style="font-size:13.5px;padding:5px 12px">${GN[topRespG]}</span></div>
+      </div>
+      <div class="scard-badges">
+        <span class="sbadge crit">경보 <span class="num">${respTally.crit}</span></span>
+        <span class="sbadge warn">주의 <span class="num">${respTally.warn}</span></span>
+        <span class="sbadge ok">정상 <span class="num">${respTally.ok}</span></span>
+      </div>
+    </div>
+    <div class="scard">
+      <div class="scard-head">
+        <div>
+          <div class="stitle">전사 안전평가</div>
+          <div class="ssub">${isInst ? `누적 벌점 ${totalSafeP}점 (기준 ${sampleStd}점)` : "납품계약 (해당없음)"}</div>
+        </div>
+        <div class="scard-total"><span class="badge b-${safeG}" style="font-size:13.5px;padding:5px 12px">${isInst ? (totalBans>=1?`입찰제한 ${totalBans}회`:GN[safeG]) : "정상"}</span></div>
+      </div>
+      <div class="scard-badges">
+        <span class="sbadge crit">경보 <span class="num">${safeTally.crit}</span></span>
+        <span class="sbadge warn">주의 <span class="num">${safeTally.warn}</span></span>
+        <span class="sbadge ok">정상 <span class="num">${safeTally.ok}</span></span>
+      </div>
+    </div>`;
+
+  // 2. 중간 종합 상세 분석 패널
+  const dPanel = document.getElementById("vendorDetailPanel");
+  const ban1Std = Math.ceil(sampleStd * 1.1);
+  const ban2Std = Math.ceil(sampleStd * 1.2);
+  const rr = sampleV.fin.r >= 6 ? "위험" : sampleV.fin.r >= 4 ? "주의" : "정상";
+
+  const qtable = `<table class="qgrid">
+    <tr><th></th>${QUARTERS.map(q=>`<th style="${q===curQ?'color:var(--sage-glow)':''}">${q}</th>`).join("")}</tr>
+    ${ITEMS.map((it,j)=>{
+      return `<tr><td class="lbl">${it}</td>${
+        QUARTERS.map(q=>{
+          const x = sampleV.r && sampleV.r[q] ? sampleV.r[q][j] : 0;
+          return `<td><span class="mini ${x===1?'lv1':x===2?'lv2':''}">${MARK[x]}</span></td>`;
+        }).join("")}</tr>`;
+    }).join("")}
+    <tr><td class="lbl" style="font-weight:700;padding-top:6px">지적 점수</td>${
+      QUARTERS.map(q=>`<td style="padding-top:6px"><span class="score ${respGrade(sampleV,q)}" style="font-size:13px">${respScore(sampleV,q)}</span></td>`).join("")}</tr></table>`;
+
+  const safeBlock = !isInst
+    ? `<p style="font-size:12.5px;color:var(--muted)">납품계약 전용 업체로 현장 설치작업이 없어 안전 벌점 평가 대상에서 제외됩니다.</p>`
+    : `<div class="kv"><span class="k">해당 공종</span><span class="v">${sampleV.trade || "외주/설치"}</span></div>
+       <div class="kv"><span class="k">제재기준 벌점</span><span class="v">${sampleStd}점</span></div>
+       <div class="kv"><span class="k">전 현장 합산 벌점</span><span class="v" style="font-weight:800;color:${totalSafeP>sampleStd?'var(--red)':'var(--sage-glow)'}">${totalSafeP}점</span></div>
+       <div class="calcbox">누적 벌점 <b>${totalSafeP}점</b> / 기준 <b>${sampleStd}점</b> (110% 올림: <b>${ban1Std}점</b>, 120% 올림: <b>${ban2Std}점</b>)
+         <div class="res">${totalBans>=1 ? `기준 ${totalBans===1?'110%':'120% 이상'} 초과 (${totalSafeP}점) → <span style="color:var(--red);font-weight:800">차년도 전사 입찰제한 ${totalBans}회</span>`
+           : totalSafeP >= sampleStd ? `기준점수(${sampleStd}점) 도달/초과 → <span style="color:var(--gold)">사전 주의 (110%인 ${ban1Std}점 이상 시 입찰제한 1회)</span>`
+           : safeG==="warn" ? `기준 75% 이상 도달 → <span style="color:var(--gold)">주의 관찰 대상</span>` : "기준 이내 → 제재 없음"}</div></div>`;
+
+  dPanel.innerHTML = `
+    <div class="dhead">
+      <div>
+        <h3><span class="pill ${pillClass}" style="font-size:12.5px;padding:3px 8px;margin-right:6px">${pillText}</span>${curVendor} 전사 통합 분석</h3>
+        <div class="meta">전체 계약 ${allContracts.length}건 · 총 계약금액 ${wonS(totalAmt)} · ${curQ} 기준</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="badge b-${topOverallG}" style="font-size:13.5px;padding:5px 14px">전사 종합 ${GN[topOverallG]}</span>
+      </div>
+    </div>
+    <div class="dbody">
+      <div class="dcol"><h4>재무평가</h4>
+        <div class="kv"><span class="k">신용등급</span><span class="v">${sampleV.fin.c}</span></div>
+        <div class="kv"><span class="k">현금흐름등급</span><span class="v">${sampleV.fin.h}</span></div>
+        <div class="kv"><span class="k">R-MIS 등급</span><span class="v">R-${sampleV.fin.r} · ${rr}</span></div>
+        <div class="calcbox">판정 <b>${GN[f.g]}</b>
+          <div class="res">${f.crit ? "신용 B- 이하 · 현금흐름 D/E · R-6 이상 중 하나 이상 해당"
+            : f.warn ? "신용 BB-~B0 또는 현금흐름 C계열 또는 R-4~R-5" : "3개 등급 모두 기준 이내"}</div></div></div>
+      <div class="dcol"><h4>현장평가 이력</h4>${qtable}
+        <div class="calcbox">현재 분기 최고 지적 <b>${maxRespScore}점</b> — ${GN[topRespG]}
+          <div class="res">0~2점 정상 · 3~5점 주의 · 6점 이상 경보</div></div></div>
+      <div class="dcol"><h4>안전평가 & 제재 기준</h4>${safeBlock}</div>
+    </div>`;
+
+  // 3. 하단 참여 현장별 계약 및 리스크 목록 테이블
+  let rows = allContracts.filter(({site, v})=>{
+    const matchScope = vendorScope==="all" ? true : vendorScope==="sub" ? v.scope==="sub" : v.scope==="mat";
+    const matchFilter = vendorFilter==="all" ? true : vendorFilter==="sub" ? v.scope==="sub" : v.scope==="mat";
+    const matchSearch = !vendorSearchSiteTerm || site.name.toLowerCase().includes(vendorSearchSiteTerm) || (v.item && v.item.toLowerCase().includes(vendorSearchSiteTerm)) || v.cat.toLowerCase().includes(vendorSearchSiteTerm);
+    return matchScope && matchFilter && matchSearch;
+  });
+
+  const GO = {crit:0, warn:1, ok:2};
+  const key = {
+    site: o => o.site.name,
+    amt: o => o.v.amt,
+    rg: o => GO[respGrade(o.v, curQ)],
+    sg: o => safety(o.v).na ? 9 : GO[safety(o.v).g],
+    og: o => GO[overall(o.v, curQ)]
+  };
+
+  if(sortVendorTable.k){
+    const kf = key[sortVendorTable.k];
+    rows.sort((a,b)=>{
+      const A = kf(a), B = kf(b);
+      return (typeof A==="string" ? A.localeCompare(B,"ko") : A-B) * sortVendorTable.d;
+    });
+  }
+
+  const tb = document.getElementById("vendorTableBody");
+  if(!rows.length){
+    tb.innerHTML = `<tr><td colspan="8" class="empty">일치하는 계약 내역이 없습니다.</td></tr>`;
+    markSort("#vendorTable", sortVendorTable);
+    return;
+  }
+
+  tb.innerHTML = rows.map(({site, v})=>{
+    const sc = respScore(v, curQ), rg = respGrade(v, curQ);
+    const s = safety(v), ov = overall(v, curQ);
+    const pClass = v.scope === "sub" ? "sub" : "mat";
+    const pText = v.scope === "sub" ? "외주" : "자재";
+    const safeText = s.na ? `<span class="badge b-na">해당없음</span>`
+      : `<span style="font-weight:700">${s.p}점</span> <span style="font-size:11.5px;color:var(--muted)">/ ${s.std}점</span> <span class="badge b-${s.g}" style="margin-left:4px">${s.bans>=1?`입찰제한 ${s.bans}회`:GN[s.g]}</span>`;
+
+    return `<tr>
+      <td class="name" style="text-align:left;font-weight:700">
+        <span class="slink" data-site="${site.name}">${site.name}</span>
+      </td>
+      <td><span class="pill ${pClass}">${pText}</span></td>
+      <td style="text-align:left;color:var(--text-2)">${v.item || v.cat}</td>
+      <td class="num">${won(v.amt)}</td>
+      <td class="divl">
+        <span class="score ${rg}" style="margin-right:4px">${sc}</span>
+        <span class="badge b-${rg}">${GN[rg]}</span>
+      </td>
+      <td class="divl">${safeText}</td>
+      <td class="divl"><span class="badge b-${ov}">${GN[ov]}</span></td>
+      <td>
+        <button class="btn" style="padding:4px 10px;font-size:12px" data-gotosite="${site.name}" data-vn="${v.n}">현장 보기 →</button>
+      </td>
+    </tr>`;
+  }).join("");
+
+  markSort("#vendorTable", sortVendorTable);
+}
 
 // ══ 모달 팝업: 전체 계약현황 조회 및 선택 추가 ══
 function renderModalTable(){
@@ -1775,12 +2133,14 @@ function closeModal(){
 function openSite(name, targetVendorName=null){
   curSite = SITES.find(s=>s.name===name);
   if(!curSite) return;
+  curVendor = null;
   selected = null; filter = "all"; sortV = {k:null, d:1}; scope = scopeTop; vendorSearchTerm = "";
   const vs = document.getElementById("vendorSearch"); if(vs) vs.value = "";
   document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on", c.dataset.f==="all"));
   document.querySelectorAll("#scopeSite button").forEach(b=>b.classList.toggle("on", b.dataset.s===scope));
   document.getElementById("siteName").textContent = "■ 현장명 : " + name;
   document.getElementById("pgTop").classList.remove("on");
+  document.getElementById("pgVendor").classList.remove("on");
   document.getElementById("pgSite").classList.add("on");
   window.scrollTo(0,0);
   renderSite();
@@ -1796,20 +2156,26 @@ function openSite(name, targetVendorName=null){
 
 function backTop(){
   document.getElementById("pgSite").classList.remove("on");
+  document.getElementById("pgVendor").classList.remove("on");
   document.getElementById("pgTop").classList.add("on");
   window.scrollTo(0,0);
   renderTop();
 }
 
 // ══ 이벤트 바인딩 ══
-["qsel","qselTop"].forEach(id=>{
+["qsel","qselTop","qselVendor"].forEach(id=>{
   const el = document.getElementById(id);
+  if(!el) return;
   el.innerHTML = QUARTERS.map(q=>`<option value="${q}" ${q===curQ?'selected':''}>${q}</option>`).join("");
   el.addEventListener("change", e=>{
     curQ = e.target.value;
-    document.getElementById("qsel").value = curQ;
-    document.getElementById("qselTop").value = curQ;
-    renderTop(); if(curSite) renderSite();
+    ["qsel","qselTop","qselVendor"].forEach(k=>{
+      const other = document.getElementById(k);
+      if(other) other.value = curQ;
+    });
+    renderTop(); 
+    if(curSite) renderSite();
+    if(curVendor) renderVendorView();
   });
 });
 
@@ -1825,6 +2191,15 @@ document.getElementById("scopeSite").addEventListener("click", e=>{
   document.querySelectorAll("#scopeSite button").forEach(x=>x.classList.toggle("on", x===b));
   renderSite();
 });
+const scopeVendorEl = document.getElementById("scopeVendor");
+if(scopeVendorEl){
+  scopeVendorEl.addEventListener("click", e=>{
+    const b = e.target.closest("button[data-s]"); if(!b) return;
+    vendorScope = b.dataset.s;
+    document.querySelectorAll("#scopeVendor button").forEach(x=>x.classList.toggle("on", x===b));
+    renderVendorView();
+  });
+}
 
 document.getElementById("siteSearch").addEventListener("input", e=>{
   siteSearchTerm = e.target.value.trim().toLowerCase();
@@ -1834,6 +2209,13 @@ document.getElementById("vendorSearch").addEventListener("input", e=>{
   vendorSearchTerm = e.target.value.trim().toLowerCase();
   renderTable();
 });
+const vSiteSearchEl = document.getElementById("vendorSiteSearch");
+if(vSiteSearchEl){
+  vSiteSearchEl.addEventListener("input", e=>{
+    vendorSearchSiteTerm = e.target.value.trim().toLowerCase();
+    renderVendorView();
+  });
+}
 
 document.getElementById("sfilters").addEventListener("click", e=>{
   const b = e.target.closest("button[data-f]"); if(!b) return;
@@ -1847,6 +2229,15 @@ document.getElementById("filters").addEventListener("click", e=>{
   document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on", c===b));
   renderTable();
 });
+const vFiltersEl = document.getElementById("vendorFilters");
+if(vFiltersEl){
+  vFiltersEl.addEventListener("click", e=>{
+    const b = e.target.closest("button[data-f]"); if(!b) return;
+    vendorFilter = b.dataset.f;
+    document.querySelectorAll("#vendorFilters .chip").forEach(c=>c.classList.toggle("on", c===b));
+    renderVendorView();
+  });
+}
 
 document.getElementById("gapji").addEventListener("click", e=>{
   const th = e.target.closest("th.srt");
@@ -1856,10 +2247,10 @@ document.getElementById("gapji").addEventListener("click", e=>{
 });
 
 document.getElementById("topSummaries").addEventListener("click", e=>{
+  const vItem = e.target.closest("[data-vn]");
+  if(vItem){ openVendor(vItem.dataset.vn); return; }
   const sItem = e.target.closest("[data-site]");
   if(sItem){ openSite(sItem.dataset.site); return; }
-  const vItem = e.target.closest("[data-vsite]");
-  if(vItem){ openSite(vItem.dataset.vsite, vItem.dataset.vn); }
 });
 
 // 상세 테이블 인터랙션: 정렬, 현장평가 셀 클릭, 안전평가 인풋 수정, 관리 제외, 상세 열기
@@ -1897,6 +2288,28 @@ document.getElementById("vtable").addEventListener("click", e=>{
     if(selected!==null) document.getElementById("detail").scrollIntoView({behavior:"smooth", block:"nearest"});
   }
 });
+
+// 업체 대시보드 테이블 인터랙션 (정렬, 현장 이동 등)
+const vTableEl = document.getElementById("vendorTable");
+if(vTableEl){
+  vTableEl.addEventListener("click", e=>{
+    const th = e.target.closest("th.srt");
+    if(th){ 
+      sortVendorTable = sortVendorTable.k===th.dataset.k ? {k:th.dataset.k, d:-sortVendorTable.d} : {k:th.dataset.k, d:1}; 
+      renderVendorView(); 
+      return; 
+    }
+    const goSiteBtn = e.target.closest("[data-gotosite]");
+    if(goSiteBtn){
+      openSite(goSiteBtn.dataset.gotosite, goSiteBtn.dataset.vn);
+      return;
+    }
+    const sLink = e.target.closest("[data-site]");
+    if(sLink){
+      openSite(sLink.dataset.site, curVendor);
+    }
+  });
+}
 
 // 안전평가 인풋 이벤트 (실시간 넘버패드 및 타이핑)
 document.getElementById("vtable").addEventListener("input", e=>{
@@ -1976,6 +2389,8 @@ const btnCritTop = document.getElementById("openCriteriaTop");
 if(btnCritTop) btnCritTop.addEventListener("click", openCriteriaModal);
 const btnCritSite = document.getElementById("openCriteriaSite");
 if(btnCritSite) btnCritSite.addEventListener("click", openCriteriaModal);
+const btnCritVendor = document.getElementById("openCriteriaVendor");
+if(btnCritVendor) btnCritVendor.addEventListener("click", openCriteriaModal);
 
 const btnCloseCrit = document.getElementById("closeCriteriaModal");
 if(btnCloseCrit) btnCloseCrit.addEventListener("click", closeCriteriaModal);
@@ -1983,6 +2398,8 @@ const btnCloseCrit2 = document.getElementById("closeCriteriaBtn");
 if(btnCloseCrit2) btnCloseCrit2.addEventListener("click", closeCriteriaModal);
 
 document.getElementById("backLink").addEventListener("click", backTop);
+const backLinkVendorEl = document.getElementById("backLinkVendor");
+if(backLinkVendorEl) backLinkVendorEl.addEventListener("click", backTop);
 
 renderTop();
 </script>
